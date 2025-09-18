@@ -17,9 +17,28 @@ import {
   Rocket
 } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function Dashboard() {
   const { trainingSteps, currentTasks, mcpConfig } = useAppStore();
+  const [backendStatus, setBackendStatus] = useState<'detecting' | 'online' | 'offline'>('detecting');
+
+  useEffect(() => {
+    const checkBackendStatus = async () => {
+      try {
+        const response = await fetch('/api/ping');
+        if (response.ok) {
+          setBackendStatus('online');
+        } else {
+          setBackendStatus('offline');
+        }
+      } catch (error) {
+        setBackendStatus('offline');
+      }
+    };
+
+    checkBackendStatus();
+  }, []);
 
   const completedSteps = trainingSteps.filter(step => step.status === 'completed').length;
   const runningTasks = currentTasks.filter(task => task.status === 'running').length;
@@ -46,7 +65,7 @@ export default function Dashboard() {
     },
     {
       name: '总进度',
-      value: (completedSteps / trainingSteps.length) * 100,
+      value: (trainingSteps.length > 0 ? (completedSteps / trainingSteps.length) * 100 : 0),
       change: 12.5,
       trend: 'up' as const
     }
@@ -62,6 +81,29 @@ export default function Dashboard() {
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">后端服务状态</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full ${
+                backendStatus === 'online'
+                  ? 'bg-green-500'
+                  : backendStatus === 'offline'
+                  ? 'bg-red-500'
+                  : 'bg-yellow-500'
+              }`} />
+              <span className="text-sm">
+                {backendStatus === 'online'
+                  ? '运行中'
+                  : backendStatus === 'offline'
+                  ? '已停止'
+                  : '检测中...'}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
         {metrics.map((metric, index) => (
           <MetricCard 
             key={metric.name} 

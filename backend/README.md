@@ -11,20 +11,21 @@
 ├── env_template             # 环境变量模板
 ├── questions.txt            # 生成的用于SFT数据的问题列表
 ├── train.jsonl              # 生成的SFT训练数据
-├── generate_questions.py    # 步骤2: 为你的工具生成领域相关问题
-├── generate_train_data.py   # 步骤3: 生成SFT训练数据
+├── generate_questions.py    # 步骤2: 根据MCP工具生成领域相关问题
+├── generate_train_data.py   # 步骤3: 根据生成的生成问题调用Agent生成SFT训练数据
 ├── train_tool_sft.py        # 步骤4: 进行监督微调 (SFT)
-├── original_model.py        # (可选) 测试未经训练的原始模型
+├── original_model.py        # 测试未经训练的原始模型
 ├── inference_tool_sft.py    # 步骤5: 测试SFT微调后的模型
-├── merge_lora.py            # 步骤7: 合并LoRA权重
-├── main_api.py              # 步骤8: 部署最终模型的API服务
-├── test_api.py              # (可选) 测试部署后的API
+├── merge_lora.py            # 步骤6和步骤9: 合并LoRA权重
+├── main_api.py              # 后端的API服务
+├── test_api.py              # 测试部署的API
 ├── a2a_agent/               # Agent模块，用于与工具服务器交互并生成对话数据
 │   └── main.py              # 运行Agent服务
 ├── mcpserver/               # 工具服务器示例 (MCP)
 │   └── energy_services.py   # 一个实现自定义工具的示例
-└── rl_train/                # (可选) 强化学习 (RL) 训练模块
-    └── train.py             # 运行RL训练
+└── rl_train/                # 强化学习 (RL) 训练模块
+    └── train.py             # 步骤7: 运行RL训练
+    └── model_test.py        # 步骤8: 测试训练后的RL模型
 ```
 
 ## 准备工作
@@ -125,7 +126,17 @@ python inference_tool_sft.py \
   --query "上海今天的天气如何？"
 ```
 
-### 步骤 6: 强化学习 (RL) 训练
+### 步骤 6: 合并 LoRA 权重
+
+将训练好的 LoRA 权重与基础模型合并，生成一个完整的、可直接部署的模型。
+
+```bash
+# 回到 backend 根目录
+cd ..
+python merge_lora.py  --base_id unsloth/Qwen3-4B-Instruct-2507  --lora_dir ./lora_model   --out_dir ./qwen3-4b-sft
+```
+
+### 步骤 7: 强化学习 (RL) 训练
 
 为了进一步优化模型的性能，你可以选择进行强化学习训练。
 
@@ -134,19 +145,19 @@ cd rl_train
 python train.py
 ```
 
-### 步骤 7: 合并 LoRA 权重
+### 步骤 8: 合并 LoRA 权重
 
 将训练好的 LoRA 权重与基础模型合并，生成一个完整的、可直接部署的模型。
 
 ```bash
 # 回到 backend 根目录
 cd ..
-python merge_lora.py
+python merge_lora.py  --base_id unsloth/Qwen3-4B-Instruct-2507  --lora_dir /workspace/verl/ART/.art/content-training/models/ppt-content06/checkpoints/0002   --out_dir ./qwen3-4b-sft
 ```
 
 合并后的模型将保存在一个新目录中（例如 `qwen3-4b-merged`）。
 
-### 步骤 8: 部署与测试
+### 步骤 9: 部署与测试
 
 使用 VLLM 框架将合并后的模型部署为 OpenAI 兼容的 API 服务。
 

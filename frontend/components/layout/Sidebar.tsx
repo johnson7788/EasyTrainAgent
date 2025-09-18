@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/button';
 
 const navigation = [
   { name: '仪表板', href: '/', icon: Home },
+  { name: '基本配置', href: '/config', icon: Settings },
   { name: '训练向导', href: '/wizard', icon: Zap },
   { name: 'MCP 配置', href: '/setup/mcp', icon: Settings },
   { name: '数据管理', href: '/data', icon: Database },

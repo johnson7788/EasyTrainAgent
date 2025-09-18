@@ -11,7 +11,7 @@ from a2a.types import (
     MessageSendParams,
     SendStreamingMessageRequest,
 )
-from mcpserver.mcp_client import get_mcp_tools
+from rl_train.mcp_client import get_mcp_tools
 
 PUBLIC_AGENT_CARD_PATH = '/.well-known/agent.json'
 EXTENDED_AGENT_CARD_PATH = '/agent/authenticatedExtendedCard'

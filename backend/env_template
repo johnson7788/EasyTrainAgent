@@ -8,3 +8,9 @@ GOOGLE_API_KEY=xxxxx
 WANDB_API_KEY=local-f2ca8cd44276ac92ca0a2c12641a6902beb6847d
 DOUBAO_API_KEY=xxxxx
 CLAUDE_API_KEY=xxxx
+
+# original_model.py进行测试时的模型
+OLLAMA_MODEL=qwen3:4b
+OLLAMA_BASE_URL=http://localhost:11434
+MCP_CONFIG=mcpserver/mcp_config.json
+QUESTION=现在的日期与时间分别是多少？

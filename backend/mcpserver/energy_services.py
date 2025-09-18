@@ -5,7 +5,29 @@
 # @Author: johnson
 # @Contact : github: johnson7788
 # @Desc  : 一体化的 LNG 价格信息 & LNG 工厂利润（模拟）查询服务
+#标准的思考与分析流程（SOP）：
 #
+# 1. **识别地区与时间范围**：
+#    - 从问题中提取出地区名称（如“浙江”、“山西”、“河北”）。
+#    - 获取当前日期。
+#    - 获取历史同期时间（通常为去年同月或同期）。
+#
+# 2. **查询当前价格与历史价格**：
+#    - 查询该地区当前LNG送到价格。
+#    - 查询该地区历史同期LNG送到价格。
+#    - 对比当前价格与历史价格的差异，并说明是上涨、下跌还是持平。
+#
+# 3. **分析供需库存与市场信息**：
+#    - 获取该地区最近的供需数据（需求量、供应量、库存情况）。
+#    - 检查是否存在供需缺口或库存变动导致价格变动。
+#    - 汇总最近的相关新闻（如天气变化、国际价格波动、政策调控等），用于补充原因分析。
+#
+# 4. **总结结论**：
+#    - 结合价格变化、供需情况与新闻内容，给出简明扼要的总结，说明“价格变动的主要原因”。
+#    - 若信息不足，可以说明“目前缺乏足够数据判断价格变动原因”。
+
+
+
 from fastmcp import FastMCP
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta, date
@@ -137,40 +159,17 @@ def get_current_date() -> str:
 def get_current_time() -> str:
     """返回当前时间，格式为HH:MM:SS。"""
     return datetime.now().strftime("%H:%M:%S")
-
-@mcp.tool()
-def set_seed(seed: int) -> int:
-    """
-    设置全局 SEED，并重建最近30天的模拟数据。
-    返回生效的种子值。
-    """
-    global SEED
-    SEED = int(seed)
-    regenerate_simulated_data()
-    return SEED
-
-@mcp.tool()
-def regenerate_data(base_date: Optional[str] = None, days: int = 30) -> str:
-    """
-    手动重建模拟数据。
-    base_date: YYYY-MM-DD；若为空则使用今天。
-    days: 重建天数（含基准日）。
-    """
-    d = _parse_date(base_date) if base_date else None
-    regenerate_simulated_data(d, days=max(1, int(days)))
-    return f"Regenerated with SEED={SEED}, base_date={(d or datetime.now().date()).isoformat()}, days={days}"
-
 # ========== 工厂利润（模拟）相关：查询竞拍价与出厂价 ==========
 @mcp.tool()
 def get_auction_price(province: str, start_date: str, end_date: str) -> Dict[str, float]:
     """
-    获取指定省份在指定日期范围内的原料气竞拍价格（模拟）。
+    获取指定省份在指定日期范围内的原料气竞拍价格。
     """
-    print(f"[模拟接口] 查询竞拍价: 省份={province}, 范围={start_date}~{end_date}")
+    print(f"[接口] 查询竞拍价: 省份={province}, 范围={start_date}~{end_date}")
     s = _parse_date(start_date)
     e = _parse_date(end_date)
     if not s or not e or s > e:
-        print("[模拟接口] 日期格式错误或开始日期晚于结束日期。")
+        print("[接口] 日期格式错误或开始日期晚于结束日期。")
         return {}
 
     out: Dict[str, float] = {}
@@ -180,20 +179,20 @@ def get_auction_price(province: str, start_date: str, end_date: str) -> Dict[str
             k = d.strftime("%Y-%m-%d")
             if k in data:
                 out[k] = data[k]
-    print(f"[模拟接口] 返回条目数: {len(out)}")
+    print(f"[接口] 返回条目数: {len(out)}")
     return out
 
 @mcp.tool()
 def get_factory_prices(factory_names: List[str], start_date: str, end_date: str) -> Dict[str, Dict[str, float]]:
     """
-    获取指定工厂列表在指定日期范围内的出厂价格（模拟）。
+    获取指定工厂列表在指定日期范围内的出厂价格。
     返回结构：{date: {factory: price, ...}, ...}
     """
-    print(f"[模拟接口] 查询出厂价: 工厂={factory_names}, 范围={start_date}~{end_date}")
+    print(f"[接口] 查询出厂价: 工厂={factory_names}, 范围={start_date}~{end_date}")
     s = _parse_date(start_date)
     e = _parse_date(end_date)
     if not s or not e or s > e:
-        print("[模拟接口] 日期格式错误或开始日期晚于结束日期。")
+        print("[接口] 日期格式错误或开始日期晚于结束日期。")
         return {}
 
     out: Dict[str, Dict[str, float]] = {}
@@ -205,46 +204,14 @@ def get_factory_prices(factory_names: List[str], start_date: str, end_date: str)
                 daily[f] = SIMULATED_FACTORY_PRICES[f][k]
         if daily:
             out[k] = daily
-    print(f"[模拟接口] 返回天数: {len(out)}")
+    print(f"[接口] 返回天数: {len(out)}")
     return out
-
-# ========== LNG 价格问题 SOP Prompt ==========
-@mcp.prompt("SOP")
-def sop_lng_price_analysis(question: str) -> str:
-    """
-    返回处理“某地LNG送到价格及变化原因”的标准分析步骤（SOP）。
-    """
-    return f"""
-你需要回答一个关于液化天然气（LNG）价格变动的问题，以下是标准的思考与分析流程（SOP）：
-
-1. **识别地区与时间范围**：
-   - 从问题中提取出地区名称（如“浙江”、“山西”、“河北”）。
-   - 获取当前日期。
-   - 获取历史同期时间（通常为去年同月或同期）。
-
-2. **查询当前价格与历史价格**：
-   - 查询该地区当前LNG送到价格。
-   - 查询该地区历史同期LNG送到价格。
-   - 对比当前价格与历史价格的差异，并说明是上涨、下跌还是持平。
-
-3. **分析供需库存与市场信息**：
-   - 获取该地区最近的供需数据（需求量、供应量、库存情况）。
-   - 检查是否存在供需缺口或库存变动导致价格变动。
-   - 汇总最近的相关新闻（如天气变化、国际价格波动、政策调控等），用于补充原因分析。
-
-4. **总结结论**：
-   - 结合价格变化、供需情况与新闻内容，给出简明扼要的总结，说明“价格变动的主要原因”。
-   - 若信息不足，可以说明“目前缺乏足够数据判断价格变动原因”。
-
-请根据以上步骤，分析以下问题并回答：
-【{question}】
-"""
 
 # ========== LNG 到岸/送到价查询 ==========
 @mcp.tool()
 def get_lng_price(region: str, start_date: str, end_date: Optional[str] = None) -> List[Dict]:
     """
-    获取指定地区从 start_date 到 end_date（默认今天）的每日 LNG 价格（模拟）。
+    获取指定地区从 start_date 到 end_date（默认今天）的每日 LNG 价格。
     - 基于月度基准价 + 小幅波动。
     - 小幅波动由与 (region, start_date, end_date, 当天日期) 绑定的稳定 RNG 产生，
       确保相同查询在不同时间点/调用次数下结果一致。
@@ -281,8 +248,6 @@ def get_lng_price(region: str, start_date: str, end_date: Optional[str] = None) 
 
 if __name__ == '__main__':
     mcp.run(transport="sse", host="127.0.0.1", port=9000)
-    # 固定种子（可选）：不调用也会使用默认种子
-    set_seed(20250422)
     # 示例1：查询最近3天内蒙古竞拍价 & 内蒙古工厂A/B出厂价
     today = datetime.now().date()
     start = (today - timedelta(days=2)).strftime("%Y-%m-%d")

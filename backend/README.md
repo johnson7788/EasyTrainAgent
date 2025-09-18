@@ -47,7 +47,7 @@ python main.py
 # 生成训练数据
 python generate_train_data.py
 ```
-6使用生成的训练数据微调模型
+6)使用生成的训练数据微调模型
 ```
 python train_tool_sft.py --data_path ./train.jsonl --epochs 3 --lr 2e-4 --batch_size 8 --grad_accum 2 --wandb_project toolsft01
 ```

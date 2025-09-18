@@ -1,0 +1,16 @@
+OPENAI_API_KEY=xxxxx
+DEEPSEEK_API_KEY=sk-xxx
+ZHIPU_API_KEY=xxxx
+WANDB_API_KEY=local-f2ca8cd44276ac92ca0a2c12641a6902beb6847d
+# lgr
+WANDB_BASE_URL=http://192.168.100.8:3005
+ART_NAME=rl-tools
+ART_MODEL=Qwen/Qwen3-4B-Instruct
+NUM_EPOCHS=2
+# 最大训练步数
+MAX_STEPS=200
+# 是否使用ruler模型评判奖励
+USE_RULER=true
+RULTER_MODEL=openai/deepseek-chat
+RULTER_API_KEY=sk-xxxx
+RULTER_API_BASE=https://api.deepseek.com/v1

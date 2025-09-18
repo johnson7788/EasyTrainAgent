@@ -200,7 +200,7 @@ class TrainingControllerApiTestCase(unittest.IsolatedAsyncioTestCase):
         url = f"{self.base_url}/api/run/cmd"
         # 尽量通用：调用 python -c 打印一行
         req = {
-            "cmd": ["python", "-c", "print('hello-cmd')"],
+            "cmd": ["pwd"],
             "timeout_sec": 15,
             "max_output_kb": 64
         }

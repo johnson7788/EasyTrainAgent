@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAppStore } from '@/stores/useAppStore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,15 +8,18 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { LogViewer } from '@/components/ui/log-viewer';
-import { 
-  Server, 
-  Play, 
-  Square, 
-  RefreshCw, 
-  CheckCircle, 
+import {
+  Server,
+  Play,
+  Square,
+  RefreshCw,
+  CheckCircle,
   AlertCircle,
   Settings,
-  Activity
+  Activity,
+  File,
+  Code,
+  Loader2
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -29,6 +32,80 @@ export default function MCPSetupPage() {
     serverPath: mcpConfig.serverPath,
     port: mcpConfig.port.toString()
   });
+
+  const [mcpFiles, setMcpFiles] = useState<string[]>([]);
+  const [selectedFile, setSelectedFile] = useState<string | null>(null);
+  const [fileContent, setFileContent] = useState<string>('');
+  const [isLoadingFiles, setIsLoadingFiles] = useState(true);
+  const [isLoadingContent, setIsLoadingContent] = useState(false);
+
+  useEffect(() => {
+    const fetchMcpFiles = async () => {
+      setIsLoadingFiles(true);
+      try {
+        const response = await fetch('/api/run/cmd', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cmd: ['ls', '-1', 'mcpserver/'] }),
+        });
+        
+        const data = await response.json();
+
+        if (!response.ok || !data.ok) {
+          const errorMsg = data.stderr_b64 ? atob(data.stderr_b64) : (data.error || 'Failed to fetch MCP files.');
+          throw new Error(errorMsg);
+        }
+
+        if (data.stderr_b64) {
+            const errorMsg = atob(data.stderr_b64);
+            if (errorMsg) {
+                throw new Error(errorMsg);
+            }
+        }
+
+        const decodedStdout = atob(data.stdout_b64);
+        const files = decodedStdout.split('\n').filter(Boolean);
+        setMcpFiles(files);
+      } catch (error: any) {
+        console.error(error);
+        toast.error(`Failed to load MCP files: ${error.message}`);
+      } finally {
+        setIsLoadingFiles(false);
+      }
+    };
+    fetchMcpFiles();
+  }, []);
+
+  const handleFileSelect = async (fileName: string) => {
+    setSelectedFile(fileName);
+    setFileContent('');
+    setIsLoadingContent(true);
+    const filePath = `mcpserver/${fileName}`;
+    setFormData({ ...formData, serverPath: filePath });
+
+    try {
+      const response = await fetch('/api/fs/read', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: filePath }),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to read file.');
+      }
+      const data = await response.json();
+      if (data.error) {
+          throw new Error(data.error);
+      }
+      setFileContent(data.content);
+    } catch (error: any) {
+      console.error(error);
+      toast.error(`Failed to read ${fileName}.`);
+      setFileContent(`Error loading file content: ${error.message}`);
+    } finally {
+      setIsLoadingContent(false);
+    }
+  };
 
   const handleStartServer = async () => {
     setIsConnecting(true);
@@ -79,7 +156,7 @@ export default function MCPSetupPage() {
       addLog({
         timestamp: new Date(),
         level: 'info',
-        message: '正在停止 MCP Server...',
+        message: '正在停止 MCP Server...', 
         source: 'mcp-server'
       });
 
@@ -117,7 +194,7 @@ export default function MCPSetupPage() {
       addLog({
         timestamp: new Date(),
         level: 'info',
-        message: '开始健康检查...',
+        message: '开始健康检查...', 
         source: 'health-check'
       });
 
@@ -160,39 +237,87 @@ export default function MCPSetupPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          {/* Configuration Form */}
+          {/* MCP File Selection */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <File className="h-5 w-5" />
+                选择 MCP 文件
+              </CardTitle>
+              <CardDescription>
+                从 mcpserver/ 目录中选择一个可用的 MCP 启动文件
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isLoadingFiles ? (
+                <div className="flex items-center gap-2 text-gray-500">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>加载文件中...</span>
+                </div>
+              ) : mcpFiles.length > 0 ? (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {mcpFiles.map((file) => (
+                    <Button
+                      key={file}
+                      variant={selectedFile === file ? 'default' : 'outline'}
+                      onClick={() => handleFileSelect(file)}
+                      className="justify-start text-left"
+                    >
+                      {file}
+                    </Button>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-500">在 mcpserver/ 目录中没有找到文件。</p>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* File Content Viewer */}
+          {selectedFile && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Code className="h-5 w-5" />
+                  文件内容: {selectedFile}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isLoadingContent ? (
+                  <div className="flex items-center gap-2 text-gray-500">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>加载内容中...</span>
+                  </div>
+                ) : (
+                  <pre className="bg-gray-900 text-white p-4 rounded-md text-sm overflow-x-auto">
+                    <code>{fileContent}</code>
+                  </pre>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Server Control */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Settings className="h-5 w-5" />
-                服务器配置
+                服务器控制
               </CardTitle>
               <CardDescription>
-                配置 MCP Server 的连接参数和运行环境
+                启动/停止选定的 MCP 服务并进行健康检查
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="serverPath">服务器路径</Label>
-                  <Input
-                    id="serverPath"
-                    placeholder="例如: /usr/local/bin/mcp-server"
-                    value={formData.serverPath}
-                    onChange={(e) => setFormData({...formData, serverPath: e.target.value})}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="port">端口号</Label>
-                  <Input
-                    id="port"
-                    type="number"
-                    placeholder="8080"
-                    value={formData.port}
-                    onChange={(e) => setFormData({...formData, port: e.target.value})}
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="port">端口号</Label>
+                <Input
+                  id="port"
+                  type="number"
+                  placeholder="8080"
+                  value={formData.port}
+                  onChange={(e) => setFormData({...formData, port: e.target.value})}
+                />
               </div>
 
               <div className="flex gap-3">
@@ -246,51 +371,6 @@ export default function MCPSetupPage() {
                   )}
                 </div>
               )}
-            </CardContent>
-          </Card>
-
-          {/* Connection Test */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="h-5 w-5" />
-                连接测试
-              </CardTitle>
-              <CardDescription>
-                测试与 MCP Server 的连接和通信
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-gray-900">
-                    {mcpConfig.isRunning ? '在线' : '离线'}
-                  </div>
-                  <div className="text-sm text-gray-600">连接状态</div>
-                </div>
-
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-gray-900">
-                    {mcpConfig.lastHealthCheck ? '<100ms' : '--'}
-                  </div>
-                  <div className="text-sm text-gray-600">响应时间</div>
-                </div>
-
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-gray-900">v1.0</div>
-                  <div className="text-sm text-gray-600">协议版本</div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <h4 className="font-medium">支持的功能</h4>
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">模型推理</Badge>
-                  <Badge variant="secondary">批量处理</Badge>
-                  <Badge variant="secondary">流式输出</Badge>
-                  <Badge variant="secondary">监控指标</Badge>
-                </div>
-              </div>
             </CardContent>
           </Card>
         </div>

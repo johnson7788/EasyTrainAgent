@@ -128,3 +128,10 @@ flowchart TD
 ## ✅ 路线图
 
 - [ ] **前端各个功能模块实现**: 
+
+## 社区交流
+
+欢迎和我微信进行交流！
+
+![weichat.png](docs%2Fweichat.png)
+

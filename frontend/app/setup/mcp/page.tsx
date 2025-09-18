@@ -46,7 +46,7 @@ export default function MCPSetupPage() {
         const response = await fetch('/api/run/cmd', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ cmd: ['ls', '-1', 'mcpserver/'] }),
+          body: JSON.stringify({ cmd: ['ls', '-1', 'mcpserver'] }),
         });
         
         const data = await response.json();

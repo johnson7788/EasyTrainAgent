@@ -1,5 +1,6 @@
 # EasyTrainAgent
 特点：全流程训练自己的领域Agent，仅需配置MCP工具。
+
 EasyTrainAgent 是一个旨在帮助开发者轻松训练和部署自己领域专属智能体（Agent）的项目。它提供从数据生成到模型部署的完整工作流程，并配备了一个用于管理和监控的 Web 用户界面。
 
 本项目由两大部分组成：
@@ -39,7 +40,7 @@ flowchart TD
 
 ## 🛠️ 技术栈
 
-- **后端**: Python, FastAPI, PyTorch, VLLM, Unsloth
+- **后端**: Python, FastAPI, PyTorch, VLLM, Unsloth, HuggingFace, ART, LangGraph, A2A, ADK, MCP, Ollama, openai-agents
 - **前端**: Next.js, TypeScript, Tailwind CSS, Shadcn/ui, Zustand, React Hook Form
 
 ## 📂 项目结构
@@ -56,6 +57,7 @@ flowchart TD
 
 - [Python](https://www.python.org/) (建议 3.9 或更高版本)
 - [Node.js](https://nodejs.org/) (建议 20.x 或更高版本)
+- Docker,Docker-GPU
 - 一个语言模型（LLM）的 API Key（例如 OpenAI），用于生成训练数据。
 
 ### 安装步骤

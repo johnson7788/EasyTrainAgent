@@ -1,299 +1,187 @@
-"use client";
+'use client';
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useAppStore } from '@/stores/useAppStore';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Textarea } from '@/components/ui/textarea';
-import { CheckCircle, XCircle, Upload, User, Bot, Wrench, Eye } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { MetricCard } from '@/components/ui/metric-card';
+import { StepIndicator } from '@/components/ui/step-indicator';
+import { 
+  Activity, 
+  Clock, 
+  CheckCircle, 
+  AlertTriangle,
+  TrendingUp,
+  Database,
+  Brain,
+  Rocket
+} from 'lucide-react';
+import Link from 'next/link';
 
-interface ConversationMessage {
-  from: 'human' | 'gpt' | 'function_call' | 'observation';
-  value: string;
-}
+export default function Dashboard() {
+  const { trainingSteps, currentTasks, mcpConfig } = useAppStore();
 
-interface Tool {
-  name: string;
-  description: string;
-  parameters: {
-    properties: Record<string, any>;
-    required?: string[];
-    type: string;
-  };
-}
+  const completedSteps = trainingSteps.filter(step => step.status === 'completed').length;
+  const runningTasks = currentTasks.filter(task => task.status === 'running').length;
+  const errorTasks = currentTasks.filter(task => task.status === 'error').length;
 
-interface ConversationData {
-  conversations: ConversationMessage[];
-  tools: Tool[];
-}
-
-const sampleData: ConversationData = {
-  "conversations": [
-    {"from": "human", "value": "今天的日期是什么？"},
-    {"from": "function_call", "value": "{\"name\": \"get_current_date\", \"arguments\": {}}"},
-    {"from": "observation", "value": "{\"result\": \"2025-09-17\"}"},
-    {"from": "gpt", "value": "今天的日期是2025年9月17日。"}
-  ],
-  "tools": [
-    {"name": "get_current_date", "description": "返回今天的日期，格式为YYYY-MM-DD。", "parameters": {"properties": {}, "type": "object"}},
-    {"name": "set_seed", "description": "\n    设置全局 SEED，并重建最近30天的模拟数据。\n    返回生效的种子值。\n    ", "parameters": {"properties": {"seed": {"type": "integer"}}, "required": ["seed"], "type": "object"}},
-    {"name": "regenerate_data", "description": "\n    手动重建模拟数据。\n    base_date: YYYY-MM-DD；若为空则使用今天。\n    days: 重建天数（含基准日）。\n    ", "parameters": {"properties": {"base_date": {"anyOf": [{"type": "string"}, {"type": "null"}], "default": ""}, "days": {"default": 30, "type": "integer"}}, "type": "object"}},
-    {"name": "get_auction_price", "description": "\n    获取指定省份在指定日期范围内的原料气竞拍价格（模拟）。\n    ", "parameters": {"properties": {"province": {"type": "string"}, "start_date": {"type": "string"}, "end_date": {"type": "string"}}, "required": ["province", "start_date", "end_date"], "type": "object"}},
-    {"name": "get_factory_prices", "description": "\n    获取指定工厂列表在指定日期范围内的出厂价格（模拟）。\n    返回结构：{date: {factory: price, ...}, ...}\n    ", "parameters": {"properties": {"factory_names": {"items": {"type": "string"}, "type": "array"}, "start_date": {"type": "string"}, "end_date": {"type": "string"}}, "required": ["factory_names", "start_date", "end_date"], "type": "object"}},
-    {"name": "get_lng_price", "description": "\n    获取指定地区从 start_date 到 end_date（默认今天）的每日 LNG 价格（模拟）。\n    - 基于月度基准价 + 小幅波动。\n    - 小幅波动由与 (region, start_date, end_date, 当天日期) 绑定的稳定 RNG 产生，\n      确保相同查询在不同时间点/调用次数下结果一致。\n    ", "parameters": {"properties": {"region": {"type": "string"}, "start_date": {"type": "string"}, "end_date": {"anyOf": [{"type": "string"}, {"type": "null"}], "default": ""}}, "required": ["region", "start_date"], "type": "object"}}
-  ]
-};
-
-export default function ConversationAnnotation() {
-  const [data, setData] = useState<ConversationData>(sampleData);
-  const [annotation, setAnnotation] = useState<'correct' | 'incorrect' | null>(null);
-  const [notes, setNotes] = useState('');
-  const [jsonInput, setJsonInput] = useState('');
-
-  const getMessageIcon = (from: string) => {
-    switch (from) {
-      case 'human':
-        return <User className="w-5 h-5" />;
-      case 'gpt':
-        return <Bot className="w-5 h-5" />;
-      case 'function_call':
-        return <Wrench className="w-5 h-5" />;
-      case 'observation':
-        return <Eye className="w-5 h-5" />;
-      default:
-        return <User className="w-5 h-5" />;
+  const metrics = [
+    {
+      name: '完成步骤',
+      value: completedSteps,
+      change: 5.2,
+      trend: 'up' as const
+    },
+    {
+      name: '运行任务',
+      value: runningTasks,
+      change: -2.1,
+      trend: 'down' as const
+    },
+    {
+      name: '错误任务',
+      value: errorTasks,
+      change: 0,
+      trend: 'stable' as const
+    },
+    {
+      name: '总进度',
+      value: (completedSteps / trainingSteps.length) * 100,
+      change: 12.5,
+      trend: 'up' as const
     }
-  };
-
-  const getMessageStyle = (from: string) => {
-    switch (from) {
-      case 'human':
-        return 'bg-blue-50 border-blue-200 text-blue-900';
-      case 'gpt':
-        return 'bg-green-50 border-green-200 text-green-900';
-      case 'function_call':
-        return 'bg-purple-50 border-purple-200 text-purple-900';
-      case 'observation':
-        return 'bg-orange-50 border-orange-200 text-orange-900';
-      default:
-        return 'bg-gray-50 border-gray-200 text-gray-900';
-    }
-  };
-
-  const getMessageLabel = (from: string) => {
-    switch (from) {
-      case 'human':
-        return '用户';
-      case 'gpt':
-        return 'AI助手';
-      case 'function_call':
-        return '函数调用';
-      case 'observation':
-        return '函数返回';
-      default:
-        return from;
-    }
-  };
-
-  const handleLoadJson = () => {
-    try {
-      const parsed = JSON.parse(jsonInput);
-      setData(parsed);
-      setJsonInput('');
-      setAnnotation(null);
-      setNotes('');
-    } catch (error) {
-      alert('JSON格式错误，请检查数据格式');
-    }
-  };
-
-  const formatJson = (value: string) => {
-    try {
-      const parsed = JSON.parse(value);
-      return JSON.stringify(parsed, null, 2);
-    } catch {
-      return value;
-    }
-  };
-
-  const handleSubmitAnnotation = () => {
-    if (annotation) {
-      console.log('标注结果:', {
-        annotation,
-        notes,
-        timestamp: new Date().toISOString()
-      });
-      alert(`标注已提交: ${annotation === 'correct' ? '正确' : '错误'}${notes ? `\n备注: ${notes}` : ''}`);
-    }
-  };
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
-      <div className="max-w-7xl mx-auto">
-        <header className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            对话标注系统
-          </h1>
-          <p className="text-gray-600">
-            为AI对话数据进行质量标注和评估
-          </p>
-        </header>
+    <div className="p-6 max-w-7xl mx-auto space-y-6">
+      {/* Header */}
+      <div className="flex flex-col gap-2">
+        <h1 className="text-3xl font-bold text-gray-900">训练流程仪表板</h1>
+        <p className="text-gray-600">监控和管理您的AI模型训练流程</p>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Main Conversation Area */}
-          <div className="lg:col-span-3 space-y-6">
-            {/* JSON Input Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Upload className="w-5 h-5" />
-                  加载对话数据
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <Textarea
-                    placeholder="粘贴JSON对话数据..."
-                    value={jsonInput}
-                    onChange={(e) => setJsonInput(e.target.value)}
-                    className="h-32"
-                  />
-                  <Button onClick={handleLoadJson} className="w-full">
-                    加载数据
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+      {/* Metrics Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {metrics.map((metric, index) => (
+          <MetricCard 
+            key={metric.name} 
+            metric={metric}
+            format={index === 3 ? 'percentage' : 'number'}
+          />
+        ))}
+      </div>
 
-            {/* Conversation Display */}
-            <Card>
-              <CardHeader>
-                <CardTitle>对话内容</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {data.conversations.map((message, index) => (
-                    <div
-                      key={index}
-                      className={cn(
-                        "border rounded-lg p-4 transition-all duration-200 hover:shadow-md",
-                        getMessageStyle(message.from)
-                      )}
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="flex-shrink-0">
-                          {getMessageIcon(message.from)}
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Badge variant="secondary">
-                              {getMessageLabel(message.from)}
-                            </Badge>
-                            <span className="text-xs text-gray-500">
-                              消息 #{index + 1}
-                            </span>
-                          </div>
-                          <div className="font-mono text-sm">
-                            {message.from === 'function_call' || message.from === 'observation' ? (
-                              <pre className="whitespace-pre-wrap">
-                                {formatJson(message.value)}
-                              </pre>
-                            ) : (
-                              <p>{message.value}</p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Annotation Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle>标注评估</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex gap-4">
-                    <Button
-                      variant={annotation === 'correct' ? 'default' : 'outline'}
-                      onClick={() => setAnnotation('correct')}
-                      className="flex-1 h-12"
-                    >
-                      <CheckCircle className="w-5 h-5 mr-2" />
-                      对话正常
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Training Progress */}
+        <div className="lg:col-span-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="h-5 w-5" />
+                训练流程进度
+              </CardTitle>
+              <CardDescription>
+                当前训练步骤和整体进度概览
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                <StepIndicator 
+                  steps={trainingSteps.slice(0, 5)} 
+                  currentStep={0}
+                  orientation="vertical"
+                />
+                <div className="flex justify-between items-center pt-4 border-t">
+                  <span className="text-sm text-gray-600">
+                    {completedSteps} / {trainingSteps.length} 步骤完成
+                  </span>
+                  <Link href="/wizard">
+                    <Button size="sm">
+                      继续训练
                     </Button>
-                    <Button
-                      variant={annotation === 'incorrect' ? 'destructive' : 'outline'}
-                      onClick={() => setAnnotation('incorrect')}
-                      className="flex-1 h-12"
-                    >
-                      <XCircle className="w-5 h-5 mr-2" />
-                      有错误
-                    </Button>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      备注说明（可选）
-                    </label>
-                    <Textarea
-                      placeholder="请描述发现的问题或补充说明..."
-                      value={notes}
-                      onChange={(e) => setNotes(e.target.value)}
-                      className="h-24"
-                    />
-                  </div>
-                  
-                  <Button 
-                    onClick={handleSubmitAnnotation}
-                    disabled={!annotation}
-                    className="w-full h-12"
-                  >
-                    提交标注
-                  </Button>
+                  </Link>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-          {/* Tools Sidebar */}
-          <div className="lg:col-span-1">
-            <Card className="sticky top-4">
-              <CardHeader>
-                <CardTitle>可用工具</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {data.tools.map((tool, index) => (
-                    <div
-                      key={index}
-                      className="border rounded-lg p-3 bg-white hover:shadow-sm transition-shadow"
-                    >
-                      <h4 className="font-semibold text-sm mb-2">
-                        {tool.name}
-                      </h4>
-                      <p className="text-xs text-gray-600 mb-2 whitespace-pre-line">
-                        {tool.description.trim()}
-                      </p>
-                      {tool.parameters.required && tool.parameters.required.length > 0 && (
-                        <div className="text-xs">
-                          <span className="text-gray-500">必需参数: </span>
-                          <span className="font-mono text-blue-600">
-                            {tool.parameters.required.join(', ')}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  ))}
+        {/* System Status */}
+        <div className="space-y-6">
+          {/* MCP Status */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">MCP 服务状态</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className={`w-2 h-2 rounded-full ${
+                    mcpConfig.isRunning ? 'bg-green-500' : 'bg-red-500'
+                  }`} />
+                  <span className="text-sm">
+                    {mcpConfig.isRunning ? '运行中' : '已停止'}
+                  </span>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+                <Link href="/setup/mcp">
+                  <Button variant="outline" size="sm">
+                    配置
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Quick Actions */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">快捷操作</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Link href="/data" className="block">
+                <Button variant="outline" className="w-full justify-start">
+                  <Database className="h-4 w-4 mr-2" />
+                  数据管理
+                </Button>
+              </Link>
+              <Link href="/train" className="block">
+                <Button variant="outline" className="w-full justify-start">
+                  <Brain className="h-4 w-4 mr-2" />
+                  开始训练
+                </Button>
+              </Link>
+              <Link href="/deploy" className="block">
+                <Button variant="outline" className="w-full justify-start">
+                  <Rocket className="h-4 w-4 mr-2" />
+                  模型部署
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          {/* Recent Activity */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">最近活动</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3 text-sm">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span>MCP 服务器配置完成</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-blue-500" />
+                  <span>开始生成训练数据</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                  <span>等待数据标注完成</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

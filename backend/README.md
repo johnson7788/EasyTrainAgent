@@ -63,14 +63,24 @@ python inference_tool_sft.py \
 ```
 
 8）强化学习继续训练模型
-[README.md](rl_train%2FREADME.md)
+2.开始训练,修改.env文件： [train.py](rl_train/train.py)
+    - 训练时和测试时使用的prompt.py
+```
+cd rl_train
+python train.py
+```
+9) 测试模型训练效果: [model_test.py](model_test.py)
+```
+cd rl_train
+python model_test.py
+```
 
-9) 合并强化学习训练后的lora模型
+10合并强化学习训练后的lora模型
 ```
 python mmerge_lora.py 
 ```
 
-10)用于线上推理部署
+11)用于线上推理部署
 ```
 # 进入合并后的模型目录的上一级，然后使用vllm运行该模型
 python -m vllm.entrypoints.openai.api_server --host 0.0.0.0 --model qwen3-4b-merged

@@ -33,7 +33,7 @@ from fastapi.responses import JSONResponse
 # ---------- 基础设置 ------------
 # ================================
 
-BASE_DIR = Path(os.environ.get("WORKSPACE_DIR", "./workspace")).resolve()
+BASE_DIR = Path(os.environ.get("WORKSPACE_DIR", ".")).resolve()
 PROJECTS_DIR = BASE_DIR / "projects"
 PROJECTS_DIR.mkdir(parents=True, exist_ok=True)
 

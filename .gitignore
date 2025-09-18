@@ -56,3 +56,4 @@ cache
 .env_dev
 .env_prod
 backend/workspace
+backend/projects

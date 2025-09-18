@@ -12,5 +12,5 @@ CLAUDE_API_KEY=xxxx
 # original_model.py进行测试时的模型
 OLLAMA_MODEL=qwen3:4b
 OLLAMA_BASE_URL=http://localhost:11434
-MCP_CONFIG=mcpserver/mcp_config.json
+MCP_CONFIG=rl_train/mcp_config.json
 QUESTION=现在的日期与时间分别是多少？

@@ -32,13 +32,19 @@ cp env_template .env
 cd mcpserver
 python energy_services.py
 ```
+
 2）测试MCP工具是正常的, mcpserver/mcp_client.py
 ```python mcp_client.py```
+
 3) 生成问题20条数据，会自动读取MCP工具，让它生成问题数据列表，保存到questions.txt
 ```
 python generate_questions.py -n 20 -o questions.txt
 ```
+
 4) 测试下未训练过的模型： [original_model.py](original_model.py)
+```
+python original_model.py
+```
 
 5)生成SFT的微调数据：先运行MCP Server, 然后运行a2a_agent/main.py, 然后运行generate_train_data.py生成SFT训练数据
 ```

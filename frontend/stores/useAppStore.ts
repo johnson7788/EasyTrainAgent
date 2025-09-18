@@ -29,6 +29,11 @@ interface AppStore {
   // UI State
   sidebarCollapsed: boolean;
   toggleSidebar: () => void;
+
+  // Labeling
+  selectedJsonlFile: string | null;
+  setSelectedJsonlFile: (file: string | null) => void;
+  clearSelectedJsonlFile: () => void;
 }
 
 const initialSteps: TrainingStep[] = [
@@ -91,14 +96,20 @@ export const useAppStore = create<AppStore>()(
 
       // UI State
       sidebarCollapsed: false,
-      toggleSidebar: () => set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed }))
+      toggleSidebar: () => set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
+
+      // Labeling
+      selectedJsonlFile: null,
+      setSelectedJsonlFile: (file) => set({ selectedJsonlFile: file }),
+      clearSelectedJsonlFile: () => set({ selectedJsonlFile: null }),
     }),
     {
       name: 'easytrain-storage',
       partialize: (state) => ({
         currentStep: state.currentStep,
         trainingSteps: state.trainingSteps,
-        mcpConfig: state.mcpConfig
+        mcpConfig: state.mcpConfig,
+        selectedJsonlFile: state.selectedJsonlFile
       })
     }
   )

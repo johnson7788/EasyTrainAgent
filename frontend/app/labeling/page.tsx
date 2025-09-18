@@ -6,13 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/componen
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
-import { Loader2, Save, ChevronLeft, ChevronRight, User, Bot } from 'lucide-react';
+import { Loader2, Save, ChevronLeft, ChevronRight, User, Bot, Terminal, Microscope } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { Badge } from '@/components/ui/badge';
 
 interface ConversationTurn {
-  role: 'user' | 'assistant';
-  content: string;
+  from: 'human' | 'function_call' | 'observation' | 'gpt';
+  value: string | object;
   label?: {
     quality: number;
     comment: string;
@@ -20,7 +19,8 @@ interface ConversationTurn {
 }
 
 interface JsonlRecord {
-  conversation: ConversationTurn[];
+  conversations: ConversationTurn[];
+  tools?: any[];
 }
 
 export default function LabelingPage() {
@@ -42,11 +42,12 @@ export default function LabelingPage() {
       setCurrentIndex(0);
 
       try {
-        const response = await fetch('/api/fs/read', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ path: selectedJsonlFile }),
-        });
+        const response = await fetch('/api/fs/read',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ path: selectedJsonlFile }),
+          });
 
         if (!response.ok) {
           const errorData = await response.json();
@@ -76,9 +77,9 @@ export default function LabelingPage() {
   const handleLabelChange = (turnIndex: number, quality: number, comment: string) => {
     const newLabeledData = [...labeledData];
     const recordToUpdate = newLabeledData[currentIndex];
-    const turnToUpdate = recordToUpdate.conversation[turnIndex];
+    const turnToUpdate = recordToUpdate.conversations[turnIndex];
 
-    if (turnToUpdate.role === 'assistant') {
+    if (turnToUpdate.from === 'gpt') {
       turnToUpdate.label = { quality, comment };
     }
 
@@ -93,11 +94,12 @@ export default function LabelingPage() {
     const newFileName = originalFileName.replace('.jsonl', '_labeled.jsonl');
 
     try {
-      const response = await fetch('/api/fs/write', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path: newFileName, content: contentToSave }),
-      });
+      const response = await fetch('/api/fs/write',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path: newFileName, content: contentToSave }),
+        });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -120,6 +122,36 @@ export default function LabelingPage() {
   const goToPrevious = () => {
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
+    }
+  };
+
+  const getTurnIcon = (from: string) => {
+    switch (from) {
+      case 'human':
+        return <User className="h-8 w-8 text-blue-500" />;
+      case 'gpt':
+        return <Bot className="h-8 w-8 text-green-500" />;
+      case 'function_call':
+        return <Terminal className="h-8 w-8 text-gray-500" />;
+      case 'observation':
+        return <Microscope className="h-8 w-8 text-purple-500" />;
+      default:
+        return null;
+    }
+  };
+
+  const getTurnStyle = (from: string) => {
+    switch (from) {
+      case 'human':
+        return 'bg-blue-50 text-blue-900';
+      case 'gpt':
+        return 'bg-green-50 text-green-900';
+      case 'function_call':
+        return 'bg-gray-100 text-gray-800';
+      case 'observation':
+        return 'bg-purple-50 text-purple-900';
+      default:
+        return 'bg-gray-50 text-gray-900';
     }
   };
 
@@ -149,7 +181,7 @@ export default function LabelingPage() {
 
   const currentRecord = labeledData[currentIndex];
   const labeledCount = labeledData.filter(r => 
-    r.conversation.some(t => t.role === 'assistant' && t.label)
+    r.conversations.some(t => t.from === 'gpt' && t.label)
   ).length;
   const progress = (labeledCount / records.length) * 100;
 
@@ -164,16 +196,12 @@ export default function LabelingPage() {
         </div>
       </CardHeader>
       <CardContent className="flex-grow overflow-auto p-4 space-y-4">
-        {currentRecord?.conversation.map((turn, turnIndex) => (
-          <div key={turnIndex} className={`flex items-start gap-3 ${turn.role === 'user' ? '' : 'flex-row-reverse'}`}>
-            {turn.role === 'user' ? (
-              <User className="h-8 w-8 text-blue-500" />
-            ) : (
-              <Bot className="h-8 w-8 text-green-500" />
-            )}
-            <div className={`p-3 rounded-lg max-w-[70%] ${turn.role === 'user' ? 'bg-blue-50 text-blue-900' : 'bg-green-50 text-green-900'}`}>
-              <p className="text-sm">{turn.content}</p>
-              {turn.role === 'assistant' && (
+        {currentRecord?.conversations.map((turn, turnIndex) => (
+          <div key={turnIndex} className={`flex items-start gap-3`}>
+            {getTurnIcon(turn.from)}
+            <div className={`p-3 rounded-lg max-w-[80%] ${getTurnStyle(turn.from)}`}>
+              <pre className="text-sm whitespace-pre-wrap">{typeof turn.value === 'string' ? turn.value : JSON.stringify(turn.value, null, 2)}</pre>
+              {turn.from === 'gpt' && (
                 <div className="mt-4 space-y-2">
                   <div>
                     <label className="text-xs font-medium">Quality (1-5)</label>

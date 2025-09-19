@@ -1,140 +1,141 @@
+[Read in Chinese](./README_ZH.md)
+
 # EasyTrainAgent
-特点：全流程训练自己的领域Agent，仅需配置MCP工具。
+**Feature**: The complete workflow to train your own domain-specific Agent, only requiring MCP tool configuration.
 
-EasyTrainAgent 是一个旨在帮助开发者轻松训练和部署自己领域专属智能体（Agent）的项目。它提供从数据生成到模型部署的完整工作流程，并配备了一个用于管理和监控的 Web 用户界面。
+EasyTrainAgent is a project designed to help developers easily train and deploy their own domain-specific intelligent agents. It provides a complete workflow from data generation to model deployment, equipped with a web-based user interface for management and monitoring.
 
-本项目由两大部分组成：
-- **后端**：一个基于 Python 的环境，用于生成训练数据、微调语言模型以及提供最终的 Agent 服务。
-- **前端**：一个 Next.js 应用，为管理项目、与文件系统交互、执行命令和数据标注等任务提供友好的图形界面。
+This project consists of two main parts:
+- **Backend**: A Python-based environment for generating training data, fine-tuning language models, and serving the final Agent.
+- **Frontend**: A Next.js application that provides a user-friendly graphical interface for tasks like project management, file system interaction, command execution, and data labeling.
 
-## ✨ 主要功能
+## ✨ Key Features
 
-### 后端
-- **自动化数据生成**：根据你提供的工具（API），自动生成领域相关的问题和 SFT 训练数据。
-- **监督微调 (SFT)**：使用生成的 `jsonl` 数据轻松微调语言模型，使其学会如何调用你的自定义工具。
-- **模型推理测试**：在合并权重之前，可以测试经过 SFT 微调后的模型，以评估其工具调用能力。
-- **强化学习 (RL)**：提供 RL 训练脚本，用于进一步优化你的 Agent 性能。
-- **权重合并**：将训练好的 LoRA 权重与基础模型合并，生成一个可直接部署的完整模型。
-- **一键部署**：使用 VLLM 框架将合并后的模型部署为与 OpenAI 兼容的 API 服务。
+### Backend
+- **Automated Data Generation**: Automatically generate domain-specific questions and SFT training data based on the tools (APIs) you provide.
+- **Supervised Fine-Tuning (SFT)**: Easily fine-tune language models using the generated `jsonl` data to teach them how to call your custom tools.
+- **Model Inference Testing**: Test the SFT-finetuned model before merging weights to evaluate its tool-calling capabilities.
+- **Reinforcement Learning (RL)**: Provides RL training scripts to further optimize your Agent's performance.
+- **Weight Merging**: Merge the trained LoRA weights with the base model to create a complete, deployable model.
+- **One-Click Deployment**: Deploy the merged model as an OpenAI-compatible API service using the VLLM framework.
 
-### 前端(开发中)
-- **项目管理**：初始化和管理不同的训练项目。
-- **文件系统交互**：直接在 Web 界面中读取、写入和修改项目工作区内的文件。
-- **命令执行**：运行 Shell 命令和 Python 脚本来执行训练和管理任务。
-- **日志查看器**：一个专用界面，用于实时查看进程日志。
-- **数据标注**：为数据注释任务提供的 UI 工具。
-- **配置向导**：一个分步指南，帮助你轻松设置项目。
+### Frontend (In Development)
+- **Project Management**: Initialize and manage different training projects.
+- **File System Interaction**: Read, write, and modify files within the project workspace directly from the web interface.
+- **Command Execution**: Run shell commands and Python scripts to perform training and management tasks.
+- **Log Viewer**: A dedicated interface for real-time viewing of process logs.
+- **Data Labeling**: UI tools provided for data annotation tasks.
+- **Configuration Wizard**: A step-by-step guide to help you set up your project easily.
 
-### 流程
+### Workflow
 ```mermaid
 flowchart TD
-    A[步骤1: 实现并运行工具服务器MCP] --> B[步骤2: 生成领域问题]
-    B --> C[步骤3: 生成 SFT 训练数据]
-    C --> D[步骤4: 监督微SFT]
-    D --> E[步骤5: 测试 SFT 模型]
-    E --> G[步骤6: 合并 LoRA 权重]
-    G --> H[步骤7: 强化学习RL训练]
-    H --> I[步骤8: 部署与测试]
-    I --> J[步骤9: 合并 LoRA 权重]
+    A[Step 1: Implement and Run Tool Server MCP] --> B[Step 2: Generate Domain Questions]
+    B --> C[Step 3: Generate SFT Training Data]
+    C --> D[Step 4: Supervised Fine-Tuning (SFT)]
+    D --> E[Step 5: Test SFT Model]
+    E --> G[Step 6: Merge LoRA Weights]
+    G --> H[Step 7: Reinforcement Learning (RL) Training]
+    H --> I[Step 8: Deploy and Test]
+    I --> J[Step 9: Merge LoRA Weights]
 ```
 
-## 🛠️ 技术栈
+## 🛠️ Tech Stack
 
-- **后端**: Python, FastAPI, PyTorch, VLLM, Unsloth, HuggingFace, ART, LangGraph, A2A, ADK, MCP, Ollama, openai-agents
-- **前端**: Next.js, TypeScript, Tailwind CSS, Shadcn/ui, Zustand, React Hook Form
+- **Backend**: Python, FastAPI, PyTorch, VLLM, Unsloth, HuggingFace, ART, LangGraph, A2A, ADK, MCP, Ollama, openai-agents
+- **Frontend**: Next.js, TypeScript, Tailwind CSS, Shadcn/ui, Zustand, React Hook Form
 
-## 📂 项目结构
+## 📂 Project Structure
 
 ```
 .
-├── backend/         # 用于训练和部署的后端服务
-└── frontend/        # 用于管理的 Next.js 前端界面
+├── backend/         # Backend services for training and deployment
+└── frontend/        # Next.js frontend interface for management
 ```
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
-### 环境要求
+### Prerequisites
 
-- [Python](https://www.python.org/) (建议 3.9 或更高版本)
-- [Node.js](https://nodejs.org/) (建议 20.x 或更高版本)
-- Docker,Docker-GPU
-- 一个语言模型（LLM）的 API Key（例如 OpenAI），用于生成训练数据。
+- [Python](https://www.python.org/) (3.9 or higher recommended)
+- [Node.js](https://nodejs.org/) (20.x or higher recommended)
+- Docker, Docker-GPU
+- An API Key for a Language Model (LLM), such as OpenAI, for generating training data.
 
-### 安装步骤
+### Installation Steps
 
-1.  **克隆仓库:**
+1.  **Clone the repository:**
     ```bash
     git clone <your-repository-url>
     cd EasyTrainAgent
     ```
 
-2.  **配置后端:**
+2.  **Configure the backend:**
     ```bash
     cd backend
     pip install -r requirements.txt
     cp env_template .env
-    # 编辑 .env 文件并填入你的 API 密钥
+    # Edit the .env file and fill in your API key
     cd ..
     ```
 
-3.  **配置前端:**
+3.  **Configure the frontend:**
     ```bash
     cd frontend
     npm install
     cd ..
     ```
 
-##  后端训练流程
+## Backend Training Workflow
 
-后端提供了一个从零开始训练智能体的完整步骤。
+The backend provides a complete set of steps to train an agent from scratch.
 
-1.  **实现并运行你的工具服务器 (MCP)**：将你的工具封装成一个 API 服务。可参考 `backend/mcpserver/energy_services.py` 文件作为示例。
+1.  **Implement and run your tool server (MCP)**: Wrap your tools into an API service. You can refer to the `backend/mcpserver/energy_services.py` file as an example.
 
-2.  **生成领域问题**：运行 `python generate_questions.py`，为你的工具生成一批相关的自然语言问题，并保存到 `questions.txt`。
+2.  **Generate domain questions**: Run `python generate_questions.py` to generate a batch of relevant natural language questions for your tools, which will be saved to `questions.txt`.
 
-3.  **生成 SFT 训练数据**：此步骤会利用 `a2a_agent` 模块，将上一步生成的问题转化为多轮对话格式的 SFT 训练数据。首先启动 Agent 服务 (`cd a2a_agent && python main.py`)，然后运行 `python generate_train_data.py` 生成 `train.jsonl` 文件。
+3.  **Generate SFT training data**: This step uses the `a2a_agent` module to convert the questions generated in the previous step into a multi-turn dialogue format for SFT training. First, start the Agent service (`cd a2a_agent && python main.py`), then run `python generate_train_data.py` to create the `train.jsonl` file.
 
-4.  **监督微调 (SFT)**：使用 `python train_tool_sft.py` 脚本和上一步生成的 `train.jsonl` 文件对基础模型进行微调，使其具备调用工具的能力。LoRA 权重将保存在 `./lora_model` 目录。
+4.  **Supervised Fine-Tuning (SFT)**: Use the `python train_tool_sft.py` script and the `train.jsonl` file from the previous step to fine-tune the base model, enabling it to call tools. The LoRA weights will be saved in the `./lora_model` directory.
 
-5.  **测试 SFT 模型**：在合并权重前，使用 `python inference_tool_sft.py` 脚本来测试微调后模型的工具调用能力。
+5.  **Test the SFT model**: Before merging the weights, use the `python inference_tool_sft.py` script to test the tool-calling ability of the fine-tuned model.
 
-6.  **强化学习 (RL) 训练**：为了进一步优化模型性能，你可以选择在 `rl_train/` 目录下运行 `python train.py` 进行强化学习训练。
+6.  **Reinforcement Learning (RL) Training**: To further optimize model performance, you can optionally run `python train.py` in the `rl_train/` directory for reinforcement learning training.
 
-7.  **合并 LoRA 权重**：运行 `python merge_lora.py`，将训练好的 LoRA 权重与基础模型合并，生成一个完整的、可直接部署的模型。
+7.  **Merge LoRA weights**: Run `python merge_lora.py` to merge the trained LoRA weights with the base model, creating a complete, directly deployable model.
 
-8.  **部署与测试**：使用 VLLM 框架将合并后的模型部署为 OpenAI 兼容的 API 服务。
+8.  **Deploy and Test**: Use the VLLM framework to deploy the merged model as an OpenAI-compatible API service.
     ```bash
-    # 将 "qwen3-4b-merged" 替换为你的模型目录名
+    # Replace "qwen3-4b-merged" with your model directory name
     python -m vllm.entrypoints.openai.api_server --host 0.0.0.0 --model qwen3-4b-merged
     ```
 
-更多详细说明，请参考 [backend/README.md](backend/README.md)。
+For more detailed instructions, please refer to [backend/README.md](backend/README.md).
 
-## 前端开发
+## Frontend Development
 
-前端提供了一个 Web 界面来管理训练过程。
+The frontend provides a web interface to manage the training process.
 
-1.  **进入前端目录:**
+1.  **Navigate to the frontend directory:**
     ```bash
     cd frontend
     ```
 
-2.  **运行开发服务器:**
+2.  **Run the development server:**
     ```bash
     npm run dev
     ```
 
-3.  在浏览器中打开 [http://localhost:3000](http://localhost:3000) 来使用该界面。
+3.  Open [http://localhost:3000](http://localhost:3000) in your browser to use the interface.
 
-有关前端架构和组件的更多详细信息，请参阅 [frontend/README.md](frontend/README.md)。
+For more details on the frontend architecture and components, please see [frontend/README.md](frontend/README.md).
 
-## ✅ 路线图
+## ✅ Roadmap
 
-- [ ] **前端各个功能模块实现**: 
+- [ ] **Implementation of various frontend functional modules**
 
-## 社区交流
+## Community
 
-欢迎和我微信进行交流！
+Feel free to connect with me on WeChat for discussions!
 
 ![weichat.png](docs%2Fweichat.png)
-

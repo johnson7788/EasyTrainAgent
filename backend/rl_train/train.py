@@ -13,7 +13,9 @@ import json
 import uuid
 import time
 import asyncio
-import dotenv
+import argparse
+# 如果你仍然想允许 .env 作为后备，可保留下一行；若完全不用环境变量，可删除
+# import dotenv; dotenv.load_dotenv()
 import wandb
 from dataclasses import dataclass
 from textwrap import dedent
@@ -33,20 +35,63 @@ from transformers import AutoTokenizer
 from my_ruler import ruler_score_group
 dotenv.load_dotenv()
 
-# ---------------- 运行配置 ----------------
-NAME = os.getenv("TRAIN_NAME", "query-agent")
-MODEL_NAME = os.getenv("ART_MODEL", "Qwen/Qwen2.5-0.5B-Instruct")
-PROJECT_NAME = os.getenv("ART_PROJECT", "query-training")
-USE_LOCAL_BACKEND = os.getenv("ART_BACKEND", "local").lower() == "local"
+# ---------------- argparse 配置 ----------------
+def str2bool(v: str) -> bool:
+    if isinstance(v, bool):
+        return v
+    return v.lower() in ("1", "true", "t", "yes", "y", "on")
 
-WANDB_PROJECT = os.getenv("WANDB_PROJECT", PROJECT_NAME)
-WANDB_ENTITY = os.getenv("WANDB_ENTITY")  # 可空
-WANDB_RUN_NAME = os.getenv("WANDB_RUN_NAME", f"{NAME}-{time.strftime('%Y%m%d-%H%M%S')}")
-MCP_CONFIG = os.getenv("MCP_CONFIG", "mcp_config.json")
-USE_RULER = os.getenv("USE_RULER", "true").lower() == "true"
-MAX_SEQ_LEN = int(os.getenv("MAX_SEQ_LEN", 4096))
-# RULER 评估模型（可选；需相应 API Key）
-RULER_MODEL = os.getenv("RULER_MODEL", "openai/o4-mini")
+def build_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(
+        description="Train a ReAct query agent with ART + LangGraph + GRPO."
+    )
+    # 运行/项目配置
+    p.add_argument("--name", default="query-agent", help="Training name (ART model name).")
+    p.add_argument("--model_name", default="Qwen/Qwen2.5-0.5B-Instruct", help="Base model id for tokenizer / ART.")
+    p.add_argument("--project", default="query-training", help="ART project name.")
+    p.add_argument("--backend", choices=["local", "skypilot"], default="local", help="Training backend.")
+    p.add_argument("--max_seq_len", type=int, default=4096, help="Max sequence length for training and clipping.")
+
+    # 数据/问题
+    p.add_argument("--questions_path", default=None, help="Path to questions.txt. Default: ../questions.txt alongside this file.")
+
+    # MCP
+    p.add_argument("--mcp_config", default="mcp_config.json", help="Path to MCP servers config JSON.")
+
+    # Ruler（可选）
+    p.add_argument("--use_ruler", type=str2bool, default=True, help="Enable external RULER scoring.")
+    p.add_argument("--ruler_model", default="openai/deepseek-chat", help="RULER model id.")
+
+    # Weights & Biases
+    p.add_argument("--wandb_project", default=None, help="W&B project (default = ART project).")
+    p.add_argument("--wandb_entity", default=None, help="W&B entity/org (optional).")
+    p.add_argument("--wandb_run_name", default=None, help="W&B run name (default uses name + timestamp).")
+    p.add_argument("--wandb_base_url", default="N/A", help="Shown in logs only; set if you use a self-hosted W&B.")
+
+    # 训练超参
+    p.add_argument("--groups_per_step", type=int, default=2, help="Trajectory groups per training step.")
+    p.add_argument("--num_epochs", type=int, default=2, help="Number of passes over the dataset.")
+    p.add_argument("--rollouts_per_group", type=int, default=3, help="Rollouts per group.")
+    p.add_argument("--learning_rate", type=float, default=1e-5, help="Learning rate.")
+    p.add_argument("--max_steps", type=int, default=10, help="Max training steps.")
+
+    return p
+
+# ---------------- 运行配置（由 argparse 提供） ----------------
+args = build_parser().parse_args()
+
+NAME = args.name
+MODEL_NAME = args.model_name
+PROJECT_NAME = args.project
+USE_LOCAL_BACKEND = (args.backend == "local")
+
+WANDB_PROJECT = args.wandb_project or PROJECT_NAME
+WANDB_ENTITY = args.wandb_entity
+WANDB_RUN_NAME = args.wandb_run_name or f"{NAME}-{time.strftime('%Y%m%d-%H%M%S')}"
+MCP_CONFIG = args.mcp_config
+USE_RULER = args.use_ruler
+MAX_SEQ_LEN = int(args.max_seq_len)
+RULER_MODEL = args.ruler_model
 RULER_API_KEY = os.getenv("RULER_API_KEY")
 RULER_API_BASE = os.getenv("RULER_API_BASE")
 WANDB_BASE_URL = os.getenv("WANDB_BASE_URL", "N/A")
@@ -165,7 +210,7 @@ def _default_questions_path() -> str:
     return question_path
 
 def load_questions(path: Optional[str] = None) -> List[str]:
-    qpath = path or os.getenv("QUESTIONS_PATH") or _default_questions_path()
+    qpath = path or _default_questions_path()
     print(f"开始加载训练问题：{qpath}")
     if not os.path.exists(qpath):
         raise FileNotFoundError(f"questions.txt 未找到：{qpath}")
@@ -339,14 +384,14 @@ async def main():
     await model.register(backend)
 
     # 从 questions.txt 加载问题并构造场景
-    questions = load_questions()
+    questions = load_questions(args.questions_path)
     scenarios = build_scenarios_from_questions(questions)
 
     training_config = {
         "groups_per_step": 2,
         "num_epochs": int(os.environ.get("NUM_EPOCHS", "2")),
         "rollouts_per_group": 3,
-        "learning_rate": 1e-5,
+        "learning_rate": float(args.learning_rate),
         "max_steps": int(os.environ.get("MAX_STEPS", 10)),
     }
     wandb.config.update(training_config)

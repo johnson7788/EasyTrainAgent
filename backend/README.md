@@ -154,7 +154,7 @@ python merge_lora.py  --base_id unsloth/Qwen3-4B-Instruct-2507  --lora_dir ./lor
 
 ```bash
 cd rl_train
-python train.py
+python train.py --use_ruler true --model_name qwen3-4b-sft --max_seq_len 8192 --questions_path ./questions.txt --mcp_config mcp_config.json
 # 注意修改.env中的ART_MODEL模型为你SFT之后的模型
 ```
 对应日志文件: [rl_train_tran.log](logs/rl_train_tran.log)

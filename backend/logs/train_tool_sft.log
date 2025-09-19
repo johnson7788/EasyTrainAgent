@@ -1,0 +1,83 @@
+python train_tool_sft.py --data_path ./train.jsonl --epochs 3 --lr 2e-4 --batch_size 8 --grad_accum 2 --wandb_project toolsft0917
+
+/workspace/verl/backend/MCP_Agents/train_tool_sft.py:33: UserWarning: WARNING: Unsloth should be imported before transformers to ensure all
+optimizations are applied. Your code may run slower or encounter memory issues without these optimizations.
+
+Please restructure your imports with 'import unsloth' at the top of your file.
+  from unsloth import FastModel
+🦥 Unsloth: Will patch your computer to enable 2x faster free finetuning.
+INFO 09-17 14:29:02 [importing.py:53] Triton module has been replaced with a placeholder.
+INFO 09-17 14:29:02 [__init__.py:239] Automatically detected platform cuda.
+🦥 Unsloth Zoo will now patch everything to make training faster!
+wandb: Appending key for 192.168.100.8:3005 to your netrc file: /root/.netrc
+wandb: Currently logged in as: johnson to http://192.168.100.8:3005. Use `wandb login --relogin` to force relogin
+wandb: WARNING Changes to your `wandb` environment variables will be ignored because your `wandb` session has already started. For more info
+rmation on how to modify your settings with `wandb.init()` arguments, please refer to https://wandb.me/wandb-init.
+wandb: Tracking run with wandb version 0.19.11
+wandb: Run data is saved locally in /workspace/verl/backend/MCP_Agents/wandb/run-20250917_142911-x0xa2yi6
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run train_function_model
+wandb: ⭐️ View project at http://192.168.100.8:3005/johnson/toolsft0917
+wandb: 🚀 View run at http://192.168.100.8:3005/johnson/toolsft0917/runs/x0xa2yi6
+[W&B] Initialized: project=toolsft0917 run=
+[HF] HUGGINGFACE_TOKEN not set; skipping hub login.
+==((====))==  Unsloth 2025.8.6: Fast Qwen3 patching. Transformers: 4.55.2. vLLM: 0.8.5.post1.
+   \\   /|    NVIDIA GeForce RTX 4090 D. Num GPUs = 1. Max memory: 23.546 GB. Platform: Linux.
+O^O/ \_/ \    Torch: 2.6.0+cu124. CUDA: 8.9. CUDA Toolkit: 12.4. Triton: 3.2.0
+\        /    Bfloat16 = TRUE. FA [Xformers = 0.0.29.post2. FA2 = True]
+ "-____-"     Free license: http://github.com/unslothai/unsloth
+Unsloth: Fast downloading is enabled - ignore downloading bars which are red colored!
+Unsloth: QLoRA and full finetuning all not selected. Switching to 16bit LoRA.
+Loading checkpoint shards: 100%|██████████████████████████████████████████████████████████████████████████████| 2/2 [00:03<00:00,  1.93s/it]
+Unsloth: Making `model.base_model.model.model` require gradients
+Generating train split: 39 examples [00:00, 4679.80 examples/s]
+[Data] Using full dataset of 39 samples.
+Formatting Glaive to chat template: 100%|███████████████████████████████████████████████████████████| 39/39 [00:00<00:00, 339.38 examples/s]
+Unsloth: Tokenizing ["text"] (num_proc=2): 100%|█████████████████████████████████████████████████████| 39/39 [00:01<00:00, 35.02 examples/s]
+[GPU] NVIDIA GeForce RTX 4090 D. Max memory = 23.546 GB. Reserved at start = 7.645 GB.
+==((====))==  Unsloth - 2x faster free finetuning | Num GPUs used = 1
+   \\   /|    Num examples = 39 | Num Epochs = 3 | Total steps = 9
+O^O/ \_/ \    Batch size per device = 8 | Gradient accumulation steps = 2
+\        /    Data Parallel GPUs = 1 | Total batch size (8 x 2 x 1) = 16
+ "-____-"     Trainable parameters = 33,030,144 of 4,055,498,240 (0.81% trained)
+  0%|                                                                                                                 | 0/9 [00:00<?, ?it/s]`use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`.
+Unsloth: Will smartly offload gradients to save VRAM!
+{'loss': 1.0395, 'grad_norm': 0.8305336236953735, 'learning_rate': 0.0, 'epoch': 0.4}
+{'loss': 1.0864, 'grad_norm': 0.869270920753479, 'learning_rate': 4e-05, 'epoch': 0.8}
+{'loss': 1.054, 'grad_norm': 0.6754862666130066, 'learning_rate': 8e-05, 'epoch': 1.0}
+{'loss': 0.9505, 'grad_norm': 0.5611265301704407, 'learning_rate': 0.00012, 'epoch': 1.4}
+{'loss': 0.966, 'grad_norm': 0.5609865188598633, 'learning_rate': 0.00016, 'epoch': 1.8}
+{'loss': 0.8205, 'grad_norm': 0.42001238465309143, 'learning_rate': 0.0002, 'epoch': 2.0}
+{'loss': 0.7156, 'grad_norm': 0.31798282265663147, 'learning_rate': 0.00015000000000000001, 'epoch': 2.4}
+{'loss': 0.7403, 'grad_norm': 0.29890546202659607, 'learning_rate': 0.0001, 'epoch': 2.8}
+{'loss': 0.6586, 'grad_norm': 0.275196373462677, 'learning_rate': 5e-05, 'epoch': 3.0}
+{'train_runtime': 95.391, 'train_samples_per_second': 1.227, 'train_steps_per_second': 0.094, 'train_loss': 0.8923885093794929, 'epoch': 3.0}
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████| 9/9 [01:38<00:00, 10.97s/it]
+TrainOutput(global_step=9, training_loss=0.8923885093794929, metrics={'train_runtime': 95.391, 'train_samples_per_second': 1.227, 'train_steps_per_second': 0.094, 'total_flos': 5228958323466240.0, 'train_loss': 0.8923885093794929})
+[Train] Runtime (s): 95.391
+[Mem] Peak reserved = 13.309 GB (56.523%). For training = 5.664 GB (24.055%).
+[Save] LoRA adapters 保存模型到: lora_model
+wandb:
+wandb:
+wandb: Run history:
+wandb:         train/epoch ▁▂▃▄▅▅▆▇██
+wandb:   train/global_step ▁▂▃▄▅▅▆▇██
+wandb:     train/grad_norm ██▆▄▄▃▂▁▁
+wandb: train/learning_rate ▁▂▄▅▇█▆▅▃
+wandb:          train/loss ▇█▇▆▆▄▂▂▁
+wandb:
+wandb: Run summary:
+wandb:               total_flos 5228958323466240.0
+wandb:              train/epoch 3
+wandb:        train/global_step 9
+wandb:          train/grad_norm 0.2752
+wandb:      train/learning_rate 5e-05
+wandb:               train/loss 0.6586
+wandb:               train_loss 0.89239
+wandb:            train_runtime 95.391
+wandb: train_samples_per_second 1.227
+wandb:   train_steps_per_second 0.094
+wandb:
+wandb: 🚀 View run train_function_model at: http://192.168.100.8:3005/johnson/toolsft0917/runs/x0xa2yi6
+wandb: ⭐️ View project at: http://192.168.100.8:3005/johnson/toolsft0917
+wandb: Synced 6 W&B file(s), 0 media file(s), 14 artifact file(

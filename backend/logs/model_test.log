@@ -1,0 +1,175 @@
+python model_test.py
+[module] LLM wrapper module loaded.
+wandb: Currently logged in as: johnson to http://192.168.100.8:3005. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.19.11
+wandb: Run data is saved locally in /workspace/verl/backend/MCP_Agents/rl_train/wandb/run-20250918_092333-queryagent03
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run queryagent03
+wandb: ⭐️ View project at http://192.168.100.8:3005/johnson/content-training
+wandb: 🚀 View run at http://192.168.100.8:3005/johnson/content-training/runs/queryagent03
+INFO 09-18 09:23:51 [importing.py:53] Triton module has been replaced with a placeholder.
+INFO 09-18 09:23:52 [__init__.py:239] Automatically detected platform cuda.
+/usr/lib/python3.10/multiprocessing/resource_tracker.py:224: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+/workspace/verl/ART/src/art/__init__.py:10: UserWarning: WARNING: Unsloth should be imported before transformers, peft to ensure all optimizations are applied. Your code may run slower or encounter memory issues without these optimizations.
+
+Please restructure your imports with 'import unsloth' at the top of your file.
+  import unsloth  # type: ignore # noqa: F401
+🦥 Unsloth: Will patch your computer to enable 2x faster free finetuning.
+INFO 09-18 09:24:02 [importing.py:53] Triton module has been replaced with a placeholder.
+INFO 09-18 09:24:02 [__init__.py:239] Automatically detected platform cuda.
+🦥 Unsloth Zoo will now patch everything to make training faster!
+[module] LLM wrapper module loaded.
+Unsloth: Patching vLLM v1 graph capture
+Unsloth: Patching vLLM v0 graph capture
+==((====))==  Unsloth 2025.8.6: Fast Qwen3 patching. Transformers: 4.55.2. vLLM: 0.8.5.post1.
+   \\   /|    NVIDIA GeForce RTX 4090 D. Num GPUs = 1. Max memory: 23.546 GB. Platform: Linux.
+O^O/ \_/ \    Torch: 2.6.0+cu124. CUDA: 8.9. CUDA Toolkit: 12.4. Triton: 3.2.0
+\        /    Bfloat16 = TRUE. FA [Xformers = 0.0.29.post2. FA2 = True]
+ "-____-"     Free license: http://github.com/unslothai/unsloth
+Unsloth: Fast downloading is enabled - ignore downloading bars which are red colored!
+Unsloth: vLLM loading unsloth/qwen3-4b-instruct-2507-unsloth-bnb-4bit with actual GPU utilization = 77.63%
+Unsloth: Your GPU has CUDA compute capability 8.9 with VRAM = 23.55 GB.
+Unsloth: Using conservativeness = 1.0. Chunked prefill tokens = 32768. Num Sequences = 256.
+Unsloth: vLLM's KV Cache can use up to 15.62 GB. Also swap space = 6 GB.
+INFO 09-18 09:24:55 [config.py:717] This model supports multiple tasks: {'score', 'generate', 'classify', 'embed', 'reward'}. Defaulting to 'generate'.
+Unsloth: vLLM Bitsandbytes config using kwargs = {'load_in_8bit': False, 'load_in_4bit': True, 'bnb_4bit_compute_dtype': 'bfloat16', 'bnb_4bit_quant_storage': 'uint8', 'bnb_4bit_quant_type': 'nf4', 'bnb_4bit_use_double_quant': True, 'llm_int8_enable_fp32_cpu_offload': False, 'llm_int8_has_fp16_weight': False, 'llm_int8_skip_modules': ['embed_tokens', 'embedding', 'lm_head', 'multi_modal_projector', 'merger', 'modality_projection', 'model.layers.6.self_attn', 'model.layers.0.self_attn', 'model.layers.35.mlp', 'model.layers.34.mlp', 'model.layers.3.self_attn', 'model.layers.5.mlp', 'model.layers.3.mlp', 'model.layers.6.mlp', 'model.layers.1.mlp', 'model.layers.2.mlp'], 'llm_int8_threshold': 6.0}
+INFO 09-18 09:24:56 [llm_engine.py:240] Initializing a V0 LLM engine (v0.8.5.post1) with config: model='unsloth/qwen3-4b-instruct-2507-unsloth-bnb-4bit', speculative_config=None, tokenizer='unsloth/qwen3-4b-instruct-2507-unsloth-bnb-4bit', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, override_neuron_config=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=32768, download_dir=None, load_format=bitsandbytes, tensor_parallel_size=1, pipeline_parallel_size=1, disable_custom_all_reduce=False, quantization=bitsandbytes, enforce_eager=False, kv_cache_dtype=auto,  device_config=cuda:0, decoding_config=DecodingConfig(guided_decoding_backend='auto', reasoning_backend=None), observability_config=ObservabilityConfig(show_hidden_metrics=False, otlp_traces_endpoint=None, collect_model_forward_time=False, collect_model_execute_time=False), seed=0, served_model_name=unsloth/qwen3-4b-instruct-2507-unsloth-bnb-4bit, num_scheduler_steps=16, multi_step_stream_outputs=True, enable_prefix_caching=True, chunked_prefill_enabled=False, use_async_output_proc=True, disable_mm_preprocessor_cache=False, mm_processor_kwargs=None, pooler_config=None, compilation_config={"level":0,"backend":"inductor","splitting_ops":[],"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"epilogue_fusion":true,"max_autotune":false,"shape_padding":true,"trace.enabled":false,"triton.cudagraphs":true,"debug":false,"dce":true,"memory_planning":true,"coordinate_descent_tuning":true,"trace.graph_diagram":false,"compile_threads":32,"group_fusion":true,"disable_progress":false,"verbose_progress":true,"triton.multi_kernel":0,"triton.use_block_ptr":true,"triton.enable_persistent_tma_matmul":true,"triton.autotune_at_compile_time":false,"triton.cooperative_reductions":false,"cuda.compile_opt_level":"-O2","cuda.enable_cuda_lto":true,"combo_kernels":false,"benchmark_combo_kernel":true,"combo_kernel_foreach_dynamic_shapes":true,"enable_auto_functionalized_v2":false},"use_cudagraph":true,"cudagraph_num_of_warmups":1,"cudagraph_capture_sizes":[256,248,240,232,224,216,208,200,192,184,176,168,160,152,144,136,128,120,112,104,96,88,80,72,64,56,48,40,32,24,16,8,4,2,1],"max_capture_size":256}, use_cached_outputs=False,
+INFO 09-18 09:25:00 [cuda.py:292] Using Flash Attention backend.
+INFO 09-18 09:25:00 [parallel_state.py:1004] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0
+INFO 09-18 09:25:00 [model_runner.py:1108] Starting to load model unsloth/qwen3-4b-instruct-2507-unsloth-bnb-4bit...
+INFO 09-18 09:25:01 [loader.py:1187] Loading weights with BitsAndBytes quantization. May take a while ...
+INFO 09-18 09:25:06 [weight_utils.py:265] Using model weights format ['*.safetensors']
+INFO 09-18 09:25:07 [weight_utils.py:281] Time spent downloading weights for unsloth/qwen3-4b-instruct-2507-unsloth-bnb-4bit: 0.758517 seconds
+INFO 09-18 09:25:07 [weight_utils.py:315] No model.safetensors.index.json found in remote.
+Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:01<00:00,  1.16s/it]
+Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:01<00:00,  1.16s/it]
+
+Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:01<00:00,  1.12s/it]
+Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:01<00:00,  1.12s/it]
+
+INFO 09-18 09:25:10 [punica_selector.py:18] Using PunicaWrapperGPU.
+INFO 09-18 09:25:10 [model_runner.py:1140] Model loading took 3.4153 GiB and 9.207365 seconds
+INFO 09-18 09:25:15 [worker.py:287] Memory profiling takes 4.72 seconds
+INFO 09-18 09:25:15 [worker.py:287] the current vLLM instance can use total_gpu_memory (23.55GiB) x gpu_memory_utilization (0.78) = 18.28GiB
+INFO 09-18 09:25:15 [worker.py:287] model weights take 3.42GiB; non_torch_memory takes 0.07GiB; PyTorch activation peak memory takes 2.62GiB; the rest of the memory reserved for KV Cache is 12.17GiB.
+INFO 09-18 09:25:15 [executor_base.py:112] # cuda blocks: 5540, # CPU blocks: 2730
+INFO 09-18 09:25:15 [executor_base.py:117] Maximum concurrency for 32768 tokens per request: 2.71x
+INFO 09-18 09:25:21 [vllm_utils.py:671] Unsloth: Running patched vLLM v0 `capture_model`.
+INFO 09-18 09:25:21 [model_runner.py:1450] Capturing cudagraphs for decoding. This may lead to unexpected consequences if the model is not static. To run the model in eager mode, set 'enforce_eager=True' or use '--enforce-eager' in the CLI. If out-of-memory error occurs during cudagraph capture, consider decreasing `gpu_memory_utilization` or switching to eager mode. You can also reduce the `max_num_seqs` as needed to decrease memory usage.
+Capturing CUDA graph shapes: 100%|██████████████████████████████████████████████████████████████████████████| 35/35 [00:18<00:00,  1.87it/s]
+INFO 09-18 09:25:39 [model_runner.py:1592] Graph capturing finished in 19 secs, took 0.96 GiB
+INFO 09-18 09:25:39 [vllm_utils.py:678] Unsloth: Patched vLLM v0 graph capture finished in 19 secs.
+INFO 09-18 09:25:40 [llm_engine.py:437] init engine (profile, create kv cache, warmup model) took 30.06 seconds
+Unsloth: Just some info: will skip parsing ['pre_feedforward_layernorm', 'post_feedforward_layernorm']
+Unsloth: Just some info: will skip parsing ['pre_feedforward_layernorm', 'post_feedforward_layernorm']
+Unsloth 2025.8.6 patched 36 layers with 36 QKV layers, 36 O layers and 36 MLP layers.
+Unsloth: Already have LoRA adapters! We shall skip this step.
+[2025-09-18 09:25:50] INFO _client.py:1740: HTTP Request: GET http://0.0.0.0:8000/v1/models "HTTP/1.1 200 OK"
+[wrap_rollout] enter | model=name='queryagent03' project='content-training' config=None trainable=True inference_api_key='default' inference_base_url='http://0.0.0.0:8000/v1' inference_model_name='queryagent03' base_model='unsloth/Qwen3-4B-Instruct-2507', fn=<function run_agent_test at 0x7e6aa8923d00>
+[wrap_rollout.wrapper] called | args_len=2, kwargs_keys=[]
+[wrap_rollout.wrapper] generated thread_id=a987abea-c113-4e9d-a96a-d91507312d39
+[add_thread] enter | thread_id=a987abea-c113-4e9d-a96a-d91507312d39, base_url=http://0.0.0.0:8000/v1, model=queryagent03, api_key_set=True
+[add_thread] creating log_path dir | log_path=.art/langgraph/a987abea-c113-4e9d-a96a-d91507312d39
+[add_thread] CURRENT_CONFIG set | log_path=.art/langgraph/a987abea-c113-4e9d-a96a-d91507312d39
+[wrap_rollout.wrapper] rollout输出日志路径log_path=.art/langgraph/a987abea-c113-4e9d-a96a-d91507312d39
+[2025-09-18 09:25:50] INFO _client.py:1740: HTTP Request: GET http://localhost:9000/sse "HTTP/1.1 200 OK"
+[2025-09-18 09:25:51] INFO _client.py:1740: HTTP Request: POST http://localhost:9000/messages/?session_id=9d970637bcbd401a93bb2f7f3f347246 "HTTP/1.1 202 Accepted"
+[2025-09-18 09:25:51] INFO _client.py:1740: HTTP Request: POST http://localhost:9000/messages/?session_id=9d970637bcbd401a93bb2f7f3f347246 "HTTP/1.1 202 Accepted"
+[2025-09-18 09:25:51] INFO _client.py:1740: HTTP Request: POST http://localhost:9000/messages/?session_id=9d970637bcbd401a93bb2f7f3f347246 "HTTP/1.1 202 Accepted"
+[init_chat_model] enter | model=name='queryagent03' project='content-training' config=None trainable=True inference_api_key='default' inference_base_url='http://0.0.0.0:8000/v1' inference_model_name='queryagent03' base_model='unsloth/Qwen3-4B-Instruct-2507', model_provider=None, config_prefix=None, kwargs_keys=['temperature']
+[init_chat_model] CURRENT_CONFIG fetched | base_url=http://127.0.0.1:8000/v1, model=queryagent03, logger_set=True, api_key_set=True
+[LoggingLLM.__init__] enter | llm_type=<class 'langchain_openai.chat_models.base.ChatOpenAI'>, logger_type=<class 'art.langgraph.logging.FileLogger'>, structured_output_type=<class 'NoneType'>, tools_len=0
+[LoggingLLM.__init__] tools_converted_len=0
+[LoggingLLM.bind_tools] enter | tools_len=7
+[LoggingLLM.__init__] enter | llm_type=<class 'langchain_core.runnables.base.RunnableBinding'>, logger_type=<class 'art.langgraph.logging.FileLogger'>, structured_output_type=<class 'NoneType'>, tools_len=7
+[LoggingLLM.__init__] tools_converted_len=7
+[LoggingLLM.ainvoke] enter | input_type=<class 'list'>, config_keys=['tags', 'metadata', 'callbacks', 'recursion_limit', 'configurable'], kwargs_keys=[]
+[LoggingLLM.ainvoke] completion_id=e6fa2ec3-dd1f-4b3b-b98d-277d92a7f507
+[LoggingLLM.ainvoke.execute] calling llm.ainvoke ...
+[2025-09-18 09:25:51] INFO _client.py:1740: HTTP Request: POST http://127.0.0.1:8000/v1/chat/completions "HTTP/1.1 200 OK"
+[LoggingLLM.ainvoke.execute] llm.ainvoke returned | result_type=<class 'langchain_core.messages.ai.AIMessage'>
+[LoggingLLM._log] enter | completion_id=e6fa2ec3-dd1f-4b3b-b98d-277d92a7f507, has_logger=True
+[LoggingLLM._log] logging entry | input_type=<class 'list'>, output_type=<class 'langchain_core.messages.ai.AIMessage'>, tools_len=7
+[LoggingLLM.ainvoke] post-execute | result_type=<class 'langchain_core.messages.ai.AIMessage'>
+[LoggingLLM.ainvoke] tool_calls_present=True
+[LoggingLLM.ainvoke] tool_call[0] before_parse | type_args=<class 'dict'>, name=get_current_date
+[LoggingLLM.ainvoke] tool_call[1] before_parse | type_args=<class 'dict'>, name=get_current_time
+[LoggingLLM.ainvoke] returning raw result
+[2025-09-18 09:25:52] INFO _client.py:1740: HTTP Request: GET http://localhost:9000/sse "HTTP/1.1 200 OK"
+[2025-09-18 09:25:52] INFO _client.py:1740: HTTP Request: GET http://localhost:9000/sse "HTTP/1.1 200 OK"
+[2025-09-18 09:25:52] INFO _client.py:1740: HTTP Request: POST http://localhost:9000/messages/?session_id=1f5705b9010e4532af63fe0cc1901b9a "HTTP/1.1 202 Accepted"
+[2025-09-18 09:25:52] INFO _client.py:1740: HTTP Request: POST http://localhost:9000/messages/?session_id=12c3281e63814bc3b790247e56abe214 "HTTP/1.1 202 Accepted"
+[2025-09-18 09:25:52] INFO _client.py:1740: HTTP Request: POST http://localhost:9000/messages/?session_id=1f5705b9010e4532af63fe0cc1901b9a "HTTP/1.1 202 Accepted"
+[2025-09-18 09:25:52] INFO _client.py:1740: HTTP Request: POST http://localhost:9000/messages/?session_id=12c3281e63814bc3b790247e56abe214 "HTTP/1.1 202 Accepted"
+[2025-09-18 09:25:52] INFO _client.py:1740: HTTP Request: POST http://localhost:9000/messages/?session_id=1f5705b9010e4532af63fe0cc1901b9a "HTTP/1.1 202 Accepted"
+[2025-09-18 09:25:52] INFO _client.py:1740: HTTP Request: POST http://localhost:9000/messages/?session_id=12c3281e63814bc3b790247e56abe214 "HTTP/1.1 202 Accepted"
+[2025-09-18 09:25:52] INFO _client.py:1740: HTTP Request: POST http://localhost:9000/messages/?session_id=1f5705b9010e4532af63fe0cc1901b9a "HTTP/1.1 202 Accepted"
+[2025-09-18 09:25:52] INFO _client.py:1740: HTTP Request: POST http://localhost:9000/messages/?session_id=12c3281e63814bc3b790247e56abe214 "HTTP/1.1 202 Accepted"
+[LoggingLLM.ainvoke] enter | input_type=<class 'list'>, config_keys=['tags', 'metadata', 'callbacks', 'recursion_limit', 'configurable'], kwargs_keys=[]
+[LoggingLLM.ainvoke] completion_id=1b26b110-a6a6-40d8-ad97-b4186e52e41d
+[LoggingLLM.ainvoke.execute] calling llm.ainvoke ...
+[2025-09-18 09:25:53] INFO _client.py:1740: HTTP Request: POST http://127.0.0.1:8000/v1/chat/completions "HTTP/1.1 200 OK"
+[LoggingLLM.ainvoke.execute] llm.ainvoke returned | result_type=<class 'langchain_core.messages.ai.AIMessage'>
+[LoggingLLM._log] enter | completion_id=1b26b110-a6a6-40d8-ad97-b4186e52e41d, has_logger=True
+[LoggingLLM._log] logging entry | input_type=<class 'list'>, output_type=<class 'langchain_core.messages.ai.AIMessage'>, tools_len=7
+[LoggingLLM.ainvoke] post-execute | result_type=<class 'langchain_core.messages.ai.AIMessage'>
+[LoggingLLM.ainvoke] tool_calls_present=False
+[LoggingLLM.ainvoke] returning raw result
+====== 推理返回（含工具轨迹） ======
+{'messages': [SystemMessage(content="\n你是一个数据查询与分析助手（Query Agent）。你的任务：\n1) 解决用户提出的问题\n2) 根据问题可以多次调用** 工具**进行检索/计算/转换；请按照工具各自的 JSON Schema 正确传参；\n\n已发现 MCP 工具：['get_current_date', 'get_current_time', 'set_seed', 'regenerate_data', 'get_auction_price', 'get_factory_prices', 'get_lng_price']（按各自 JSON Schema 传参）\n", additional_kwargs={}, response_metadata={}, id='54bd0592-ebaa-49d4-8da3-8fc6bde8d9d7'), HumanMessage(content='按要求完成下面任务，并在完成后调用 return_final_outline_tool 提交。现在的日期与时间分别是多少？', additional_kwargs={}, response_metadata={}, id='b3c39c61-0129-4848-ac14-eefc36e2c2e7'), AIMessage(content='', additional_kwargs={'tool_calls': [{'id': 'chatcmpl-tool-0357f10b1faf4710a33eb542a12b979d', 'function': {'arguments': '{}', 'name': 'get_current_date'}, 'type': 'function'}, {'id': 'chatcmpl-tool-1894481a335b47ed9c0898ab10ac4b07', 'function': {'arguments': '{}', 'name': 'get_current_time'}, 'type': 'function'}], 'refusal': None}, response_metadata={'token_usage': {'completion_tokens': 34, 'prompt_tokens': 893, 'total_tokens': 927, 'completion_tokens_details': None, 'prompt_tokens_details': None}, 'model_name': 'queryagent03', 'system_fingerprint': None, 'id': 'chatcmpl-793a6d4689bb413bab5a7963bab516b5', 'service_tier': None, 'finish_reason': 'tool_calls', 'logprobs': {'content': [{'token': 'token_id:151657', 'bytes': [60, 116, 111, 111, 108, 95, 99, 97, 108, 108, 62], 'logprob': -0.0003828269545920193, 'top_logprobs': []}, {'token': 'token_id:198', 'bytes': [10], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:4913', 'bytes': [123, 34], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:606', 'bytes': [110, 97, 109, 101], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:788', 'bytes': [34, 58], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:330', 'bytes': [32, 34], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:455', 'bytes': [103, 101, 116], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:11080', 'bytes': [95, 99, 117, 114, 114, 101, 110, 116], 'logprob': -2.3841855067985307e-07, 'top_logprobs': []}, {'token': 'token_id:4164', 'bytes': [95, 100, 97, 116, 101], 'logprob': -3.576278118089249e-07, 'top_logprobs': []}, {'token': 'token_id:497', 'bytes': [34, 44], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:330', 'bytes': [32, 34], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:16370', 'bytes': [97, 114, 103, 117, 109, 101, 110, 116, 115], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:788', 'bytes': [34, 58], 'logprob': -0.00027211778797209263, 'top_logprobs': []}, {'token': 'token_id:4687', 'bytes': [32, 123, 125], 'logprob': -2.109982233378105e-05, 'top_logprobs': []}, {'token': 'token_id:532', 'bytes': [125, 10], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:151658', 'bytes': [60, 47, 116, 111, 111, 108, 95, 99, 97, 108, 108, 62], 'logprob': -0.00021407696476671845, 'top_logprobs': []}, {'token': 'token_id:198', 'bytes': [10], 'logprob': -0.06199405714869499, 'top_logprobs': []}, {'token': 'token_id:151657', 'bytes': [60, 116, 111, 111, 108, 95, 99, 97, 108, 108, 62], 'logprob': -0.0005470209871418774, 'top_logprobs': []}, {'token': 'token_id:198', 'bytes': [10], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:4913', 'bytes': [123, 34], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:606', 'bytes': [110, 97, 109, 101], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:788', 'bytes': [34, 58], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:330', 'bytes': [32, 34], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:455', 'bytes': [103, 101, 116], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:11080', 'bytes': [95, 99, 117, 114, 114, 101, 110, 116], 'logprob': -1.1920928244535389e-07, 'top_logprobs': []}, {'token': 'token_id:3009', 'bytes': [95, 116, 105, 109, 101], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:497', 'bytes': [34, 44], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:330', 'bytes': [32, 34], 'logprob': -8.344646857949556e-07, 'top_logprobs': []}, {'token': 'token_id:16370', 'bytes': [97, 114, 103, 117, 109, 101, 110, 116, 115], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:788', 'bytes': [34, 58], 'logprob': -9.095255518332124e-05, 'top_logprobs': []}, {'token': 'token_id:4687', 'bytes': [32, 123, 125], 'logprob': -6.639736966462806e-05, 'top_logprobs': []}, {'token': 'token_id:532', 'bytes': [125, 10], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:151658', 'bytes': [60, 47, 116, 111, 111, 108, 95, 99, 97, 108, 108, 62], 'logprob': -0.000417741306591779, 'top_logprobs': []}, {'token': 'token_id:151645', 'bytes': [], 'logprob': -2.3841855067985307e-07, 'top_logprobs': []}], 'refusal': None}}, id='run--1fbcbcaa-3198-401a-93b7-b05b43b990a0-0', tool_calls=[{'name': 'get_current_date', 'args': {}, 'id': 'chatcmpl-tool-0357f10b1faf4710a33eb542a12b979d', 'type': 'tool_call'}, {'name': 'get_current_time', 'args': {}, 'id': 'chatcmpl-tool-1894481a335b47ed9c0898ab10ac4b07', 'type': 'tool_call'}], usage_metadata={'input_tokens': 893, 'output_tokens': 34, 'total_tokens': 927, 'input_token_details': {}, 'output_token_details': {}}), ToolMessage(content='2025-09-18', name='get_current_date', id='04eb87e7-6ed2-4195-bdd4-e585124f762e', tool_call_id='chatcmpl-tool-0357f10b1faf4710a33eb542a12b979d'), ToolMessage(content='09:25:52', name='get_current_time', id='9a104446-9f23-433e-9603-0a4881e9d67b', tool_call_id='chatcmpl-tool-1894481a335b47ed9c0898ab10ac4b07'), AIMessage(content='当前的日期是 2025-09-18，时间是 09:25:52。', additional_kwargs={'refusal': None}, response_metadata={'token_usage': {'completion_tokens': 29, 'prompt_tokens': 963, 'total_tokens': 992, 'completion_tokens_details': None, 'prompt_tokens_details': None}, 'model_name': 'queryagent03', 'system_fingerprint': None, 'id': 'chatcmpl-5af33064e1fd45f88a411db22ec8275a', 'service_tier': None, 'finish_reason': 'stop', 'logprobs': {'content': [{'token': 'token_id:67949', 'bytes': [229, 189, 147, 229, 137, 141], 'logprob': -0.16606271266937256, 'top_logprobs': []}, {'token': 'token_id:9370', 'bytes': [231, 154, 132], 'logprob': -0.8259398341178894, 'top_logprobs': []}, {'token': 'token_id:45785', 'bytes': [230, 151, 165, 230, 156, 159], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:20412', 'bytes': [230, 152, 175], 'logprob': -5.960462772236497e-07, 'top_logprobs': []}, {'token': 'token_id:220', 'bytes': [32], 'logprob': -0.014171676710247993, 'top_logprobs': []}, {'token': 'token_id:17', 'bytes': [50], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:15', 'bytes': [48], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:17', 'bytes': [50], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:20', 'bytes': [53], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:12', 'bytes': [45], 'logprob': -1.1920928244535389e-07, 'top_logprobs': []}, {'token': 'token_id:15', 'bytes': [48], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:24', 'bytes': [57], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:12', 'bytes': [45], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:16', 'bytes': [49], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:23', 'bytes': [56], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:3837', 'bytes': [239, 188, 140], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:20450', 'bytes': [230, 151, 182, 233, 151, 180], 'logprob': -0.02357383817434311, 'top_logprobs': []}, {'token': 'token_id:20412', 'bytes': [230, 152, 175], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:220', 'bytes': [32], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:15', 'bytes': [48], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:24', 'bytes': [57], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:25', 'bytes': [58], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:17', 'bytes': [50], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:20', 'bytes': [53], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:25', 'bytes': [58], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:20', 'bytes': [53], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:17', 'bytes': [50], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:1773', 'bytes': [227, 128, 130], 'logprob': 0.0, 'top_logprobs': []}, {'token': 'token_id:151645', 'bytes': [], 'logprob': -0.030096113681793213, 'top_logprobs': []}], 'refusal': None}}, id='run--52e6e7da-ea09-4471-8666-c60e67fccde7-0', usage_metadata={'input_tokens': 963, 'output_tokens': 29, 'total_tokens': 992, 'input_token_details': {}, 'output_token_details': {}})]}
+====== 最终答案（assistant 消息） ======
+当前的日期是 2025-09-18，时间是 09:25:52。
+[TEST] agent finished. See backend logs / tracing for details.
+[wrap_rollout.wrapper] rollout result=None
+[create_messages_from_logs] enter | log_path=.art/langgraph/a987abea-c113-4e9d-a96a-d91507312d39, trajectory_type=<class 'NoneType'>
+[create_messages_from_logs] loaded logs | count=2
+[create_messages_from_logs] processing log_entry | idx=0
+[create_messages_from_logs] output_type=<class 'langchain_core.messages.ai.AIMessage'>, tools_len=7
+[create_messages_from_logs] input_msgs_type=<class 'list'>, input_msgs_len=2
+[create_messages_from_logs] no match found, appending new conversation
+[create_messages_from_logs] processing log_entry | idx=1
+[create_messages_from_logs] output_type=<class 'langchain_core.messages.ai.AIMessage'>, tools_len=7
+[create_messages_from_logs] input_msgs_type=<class 'list'>, input_msgs_len=5
+[create_messages_from_logs] matched existing conversation | idx=0
+[create_messages_from_logs] conversations_built | count=1
+[create_messages_from_logs] converting conversation | idx=0, conv_len=6
+[create_messages_from_logs] converted_type=<class 'list'>
+[create_messages_from_logs] convert_langgraph_messages failed | idx=0, error='NoneType' object has no attribute 'messages_and_choices'
+[create_messages_from_logs] done
+[2025-09-18 09:25:53] ERROR base_events.py:1758: Exception in callback LocalBackend._prepare_backend_for_training.<locals>.done_callback(<Task cancell...ckend.py:287>>) at /workspace/verl/ART/src/art/local/backend.py:278
+handle: <Handle LocalBackend._prepare_backend_for_training.<locals>.done_callback(<Task cancell...ckend.py:287>>) at /workspace/verl/ART/src/art/local/backend.py:278>
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/asyncio/tasks.py", line 234, in __step
+    result = coro.throw(exc)
+  File "/workspace/verl/ART/src/mp_actors/move.py", line 102, in _handle_responses
+    response: Response = await loop.run_in_executor(
+  File "/usr/lib/python3.10/asyncio/futures.py", line 285, in __await__
+    yield self  # This tells Task to wait for completion.
+  File "/usr/lib/python3.10/asyncio/tasks.py", line 304, in __wakeup
+    future.result()
+  File "/usr/lib/python3.10/asyncio/futures.py", line 196, in result
+    raise exc
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "/workspace/verl/ART/src/art/local/backend.py", line 279, in done_callback
+    close_proxy(self._services.pop(model.name))
+  File "/workspace/verl/ART/src/mp_actors/move.py", line 60, in close_proxy
+    getattr(proxy, "close", lambda: None)()
+  File "/workspace/verl/ART/src/mp_actors/move.py", line 214, in close
+    asyncio.get_event_loop().run_until_complete(self._handle_responses_task)
+  File "/usr/local/lib/python3.10/dist-packages/nest_asyncio.py", line 98, in run_until_complete
+    return f.result()
+  File "/usr/lib/python3.10/asyncio/futures.py", line 196, in result
+    raise exc
+asyncio.exceptions.CancelledError
+wandb:
+wandb: 🚀 View run queryagent03 at: http://192.168.100.8:3005/johnson/content-training/runs/queryagent03
+wandb: Find logs at: wandb/run-20250918_092333-queryagent03/logs

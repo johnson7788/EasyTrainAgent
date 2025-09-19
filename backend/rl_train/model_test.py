@@ -25,9 +25,9 @@ from mcp_config_load import load_mcp_servers
 dotenv.load_dotenv()
 
 # ---------- 与训练保持一致 ----------
-NAME = os.getenv("ART_NAME", "query-agent")
+NAME = os.getenv("TRAIN_NAME", "query-agent")
 MODEL_NAME = os.getenv("ART_MODEL", "Qwen/Qwen2.5-0.5B-Instruct")
-PROJECT_NAME = os.getenv("ART_PROJECT", "content-training")
+PROJECT_NAME = os.getenv("ART_PROJECT", "query-training")
 USE_LOCAL_BACKEND = os.getenv("ART_BACKEND", "local").lower() == "local"
 MCP_CONFIG = os.getenv("MCP_CONFIG", "mcp_config.json")
 

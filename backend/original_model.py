@@ -56,11 +56,8 @@ async def run_agent_eval(question: str):
 
     system_prompt = prompt.ROLLOUT_SYSTEM_PROMPT.format(tools_json_note=tools_json_note)
 
-    # 用户提示：优先使用 {question}，否则回退到 {topic}
-    try:
-        user_msg = prompt.ROLLOUT_USER_PROMPT.format(question=question)
-    except Exception:
-        user_msg = prompt.ROLLOUT_USER_PROMPT.format(topic=question)
+    # 用户提示：优先使用 {question}
+    user_msg = prompt.TEST_USER_PROMPT.format(question=question)
 
     # 3) 本地 Ollama 聊天模型
     chat_model = ChatOllama(

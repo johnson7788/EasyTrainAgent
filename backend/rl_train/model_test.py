@@ -49,7 +49,7 @@ async def run_agent_test(model: art.Model, question: str):
     tool_names_for_prompt: List[str] = [getattr(t, "name", str(t)) for t in lc_tools]
     tools_json_note = f"已发现 MCP 工具：{tool_names_for_prompt}（按各自 JSON Schema 传参）"
     system_prompt = prompt.ROLLOUT_SYSTEM_PROMPT.format(tools_json_note=tools_json_note)
-    user_msg = prompt.ROLLOUT_USER_PROMPT.format(question=question)
+    user_msg = prompt.TEST_USER_PROMPT.format(question=question)
 
     # 用 ART 的 init_chat_model 获取可用的聊天模型（后端会加载最近训练好的 LoRA）
     chat_model = init_chat_model(model, temperature=0.3)

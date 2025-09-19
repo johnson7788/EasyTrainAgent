@@ -13,5 +13,8 @@ ROLLOUT_SYSTEM_PROMPT="""
 
 {tools_json_note}
 """
+# 训练时的prompt
+ROLLOUT_USER_PROMPT="""按要求完成下面任务，并在完成后调用 return_final_answer_tool 提交。{question}"""
 
-ROLLOUT_USER_PROMPT="""按要求完成下面任务，并在完成后调用 return_final_outline_tool 提交。{question}"""
+# 测试时的prompt
+TEST_USER_PROMPT="""按要求完成下面任务:\n{question}"""

@@ -32,10 +32,10 @@ This project consists of two main parts:
 flowchart TD
     A[Step 1: Implement and Run Tool Server MCP] --> B[Step 2: Generate Domain Questions]
     B --> C[Step 3: Generate SFT Training Data]
-    C --> D[Step 4: Supervised Fine-Tuning (SFT)]
+    C --> D[Step 4: Supervised Fine-Tuning -SFT]
     D --> E[Step 5: Test SFT Model]
     E --> G[Step 6: Merge LoRA Weights]
-    G --> H[Step 7: Reinforcement Learning (RL) Training]
+    G --> H[Step 7: Reinforcement Learning RL Training]
     H --> I[Step 8: Deploy and Test]
     I --> J[Step 9: Merge LoRA Weights]
 ```

@@ -171,7 +171,7 @@ python model_test.py
 ```bash
 # 回到 backend 根目录
 cd ..
-python merge_lora.py  --base_id unsloth/Qwen3-4B-Instruct-2507  --lora_dir /workspace/verl/ART/.art/content-training/models/ppt-content06/checkpoints/0002   --out_dir ./qwen3-4b-sft
+python merge_lora.py  --base_id unsloth/Qwen3-4B-Instruct-2507  --lora_dir /workspace/verl/ART/.art/$PROJECT_NAME/models/$TRAIN_NAME/checkpoints/0002   --out_dir ./qwen3-4b-sft
 ```
 
 合并后的模型将保存在一个新目录中（例如 `qwen3-4b-merged`）。

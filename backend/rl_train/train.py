@@ -34,9 +34,9 @@ from my_ruler import ruler_score_group
 dotenv.load_dotenv()
 
 # ---------------- 运行配置 ----------------
-NAME = os.getenv("ART_NAME", "query-agent")
+NAME = os.getenv("TRAIN_NAME", "query-agent")
 MODEL_NAME = os.getenv("ART_MODEL", "Qwen/Qwen2.5-0.5B-Instruct")
-PROJECT_NAME = os.getenv("ART_PROJECT", "content-training")
+PROJECT_NAME = os.getenv("ART_PROJECT", "query-training")
 USE_LOCAL_BACKEND = os.getenv("ART_BACKEND", "local").lower() == "local"
 
 WANDB_PROJECT = os.getenv("WANDB_PROJECT", PROJECT_NAME)

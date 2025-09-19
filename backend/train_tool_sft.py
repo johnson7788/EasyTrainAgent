@@ -22,18 +22,16 @@ References:
 import os
 import json
 import argparse
-from dataclasses import dataclass
 from typing import Dict, Any, List, Optional
-
+from unsloth import FastModel
+from dataclasses import dataclass
 import torch
 from datasets import load_dataset
 from huggingface_hub import login
 from transformers import TrainingArguments
 # Unsloth imports
-from unsloth import FastModel
 from trl import SFTConfig, SFTTrainer
 from unsloth.chat_templates import get_chat_template
-
 
 def maybe_login_wandb(project: str = None, run: str = None):
     """Initialize Weights & Biases logging if a project is provided."""
@@ -121,8 +119,7 @@ def build_argparser():
 
     # chat template & thinking
     p.add_argument("--chat_template", default=TrainConfig.chat_template, help='e.g. "qwen-3" or "qwen-2.5"')
-    p.add_argument("--enable_thinking", action="store_true",
-                        help="Enable Qwen3 thinking tags <think>...</think>. Default off for Instruct.")
+    p.add_argument("--enable_thinking", action="store_true",help="Enable Qwen3 thinking tags <think>...</think>. Default off for Instruct.")
 
     # local data
     p.add_argument("--data_path", default=TrainConfig.data_path, help="Path to glaive_toolcall.jsonl")

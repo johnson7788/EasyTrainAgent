@@ -57,7 +57,7 @@ flowchart TD
 
 ### Prerequisites
 
-- [Python](https://www.python.org/) (3.9 or higher recommended)
+- [Python](https://www.python.org/) (3.11 or higher recommended)
 - [Node.js](https://nodejs.org/) (20.x or higher recommended)
 - Docker, Docker-GPU
 - An API Key for a Language Model (LLM), such as OpenAI, for generating training data.

@@ -55,7 +55,7 @@ flowchart TD
 
 ### 环境要求
 
-- [Python](https://www.python.org/) (建议 3.9 或更高版本)
+- [Python](https://www.python.org/) (建议 3.11 或更高版本)
 - [Node.js](https://nodejs.org/) (建议 20.x 或更高版本)
 - Docker,Docker-GPU
 - 一个语言模型（LLM）的 API Key（例如 OpenAI），用于生成训练数据。

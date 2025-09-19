@@ -157,10 +157,12 @@ cd rl_train
 python train.py
 # 注意修改.env中的ART_MODEL模型为你SFT之后的模型
 ```
+对应日志文件: [rl_train_tran.log](logs/rl_train_tran.log)
 ```
 # 训练完成后进行模型测试
 python model_test.py
 ```
+对应的日志文件： [model_test.log](logs/model_test.log)
 
 ### 步骤 8: 合并 LoRA 权重
 

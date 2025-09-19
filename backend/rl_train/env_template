@@ -14,3 +14,6 @@ USE_RULER=true
 RULTER_MODEL=openai/deepseek-chat
 RULTER_API_KEY=sk-xxxx
 RULTER_API_BASE=https://api.deepseek.com/v1
+
+#model_test.py使用的测试问题
+TEST_QUESTION="现在的日期与时间分别是多少"

@@ -6,11 +6,12 @@
 # @Contact : github: johnson7788
 # @Desc  : 基于 LangGraph + ART 的 QueryAgent 测试脚本（工具从 MCP 服务器发现并调用）
 
+import logging
+logging.basicConfig(level=logging.DEBUG)
 import os
 import uuid
 import asyncio
 from typing import Optional, List
-
 import dotenv
 import art
 import prompt

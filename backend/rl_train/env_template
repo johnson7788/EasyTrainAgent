@@ -6,6 +6,7 @@ WANDB_API_KEY=local-xxx
 WANDB_BASE_URL=http://192.168.100.8:3005
 CLAUDE_API_KEY=sk-ant-a
 TRAIN_NAME=queryagent03
+# 改成SFT微调过的模型， ART_MODEL=qwen3-4b-sft
 ART_MODEL=unsloth/Qwen3-4B-Instruct-2507
 # 项目名称，art的训练结果会保存到.art/ART_PROJECT 这个目录下
 ART_PROJECT=query-training

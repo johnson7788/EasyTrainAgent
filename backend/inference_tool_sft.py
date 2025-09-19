@@ -51,7 +51,7 @@ from vllm.sampling_params import SamplingParams
 # NEW: MCP imports
 import asyncio
 from fastmcp import Client  # pip install fastmcp
-from mcp_client import tool_definition_to_dict  # reuse existing util
+from rl_train.mcp_client import tool_definition_to_dict  # reuse existing util
 
 # =========================
 # Utility

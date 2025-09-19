@@ -116,6 +116,11 @@ python train_tool_sft.py \
 ```
 
 训练完成后，LoRA 权重将保存在 `./lora_model` 目录中。
+```
+ls lora_model/
+README.md            adapter_model.safetensors  chat_template.jinja  special_tokens_map.json  tokenizer_config.json
+adapter_config.json  added_tokens.json          merges.txt           tokenizer.json           vocab.json
+```
 
 ### 步骤 5: 测试 SFT 模型
 
@@ -125,7 +130,7 @@ python train_tool_sft.py \
 python inference_tool_sft.py \
   --model ./lora_model \
   --base_model unsloth/Qwen3-4B-Instruct-2507 \
-  --query "上海今天的天气如何？"
+  --query "山西2024年5月的LNG到岸价格是多少？"
 ```
 
 ### 步骤 6: 合并 LoRA 权重

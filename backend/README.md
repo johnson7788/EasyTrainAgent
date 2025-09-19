@@ -154,13 +154,14 @@ python merge_lora.py  --base_id unsloth/Qwen3-4B-Instruct-2507  --lora_dir ./lor
 
 ```bash
 cd rl_train
-python train.py --use_ruler true --model_name qwen3-4b-sft --max_seq_len 8192 --questions_path ./questions.txt --mcp_config mcp_config.json
-# 注意修改.env中的ART_MODEL模型为你SFT之后的模型
+# 指定项目名称，实验名称
+python train.py --name query-agent --project query-training --use_ruler true --model_name ./qwen3-4b-sft --max_seq_len 8192 --questions_path ./questions.txt --mcp_config mcp_config.json
+# 注意修改模型为你SFT之后的导出的模型
 ```
 对应日志文件: [rl_train_tran.log](logs/rl_train_tran.log)
 ```
-# 训练完成后进行模型测试
-python model_test.py
+# 训练完成后进行模型测试，指定和训练相同的项目名称，实验名称
+python model_test.py --name query-agent --project query-training  --model_name ./qwen3-4b-sft --mcp_config mcp_config.json
 ```
 对应的日志文件： [model_test.log](logs/model_test.log)
 

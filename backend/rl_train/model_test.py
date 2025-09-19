@@ -11,6 +11,7 @@ logging.basicConfig(level=logging.DEBUG)
 import os
 import uuid
 import asyncio
+import argparse
 from typing import Optional, List
 import dotenv
 import art
@@ -25,12 +26,34 @@ from mcp_config_load import load_mcp_servers
 
 dotenv.load_dotenv()
 
+# ---------------- argparse 配置 ----------------
+def str2bool(v: str) -> bool:
+    if isinstance(v, bool):
+        return v
+    return v.lower() in ("1", "true", "t", "yes", "y", "on")
+
+def build_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(
+        description="Train a ReAct query agent with ART + LangGraph + GRPO."
+    )
+    # 运行/项目配置
+    p.add_argument("--name", default="query-agent", help="Training name (ART model name).")
+    p.add_argument("--model_name", default="Qwen/Qwen2.5-0.5B-Instruct", help="Base model id for tokenizer / ART.")
+    p.add_argument("--project", default="query-training", help="ART project name.")
+    # MCP
+    p.add_argument("--mcp_config", default="mcp_config.json", help="Path to MCP servers config JSON.")
+
+    return p
+
+# ---------------- 运行配置（由 argparse 提供） ----------------
+args = build_parser().parse_args()
+
 # ---------- 与训练保持一致 ----------
-NAME = os.getenv("TRAIN_NAME", "query-agent")
-MODEL_NAME = os.getenv("ART_MODEL", "Qwen/Qwen2.5-0.5B-Instruct")
-PROJECT_NAME = os.getenv("ART_PROJECT", "query-training")
+NAME = args.name
+MODEL_NAME = args.model_name
+PROJECT_NAME = args.project
+MCP_CONFIG = args.mcp_config
 USE_LOCAL_BACKEND = os.getenv("ART_BACKEND", "local").lower() == "local"
-MCP_CONFIG = os.getenv("MCP_CONFIG", "mcp_config.json")
 
 async def run_agent_test(model: art.Model, question: str):
     """

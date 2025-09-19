@@ -5,17 +5,18 @@ WANDB_API_KEY=local-xxx
 # lgr
 WANDB_BASE_URL=http://192.168.100.8:3005
 CLAUDE_API_KEY=sk-ant-a
-TRAIN_NAME=queryagent03
-# 改成SFT微调过的模型， ART_MODEL=qwen3-4b-sft
-ART_MODEL=unsloth/Qwen3-4B-Instruct-2507
-# 项目名称，art的训练结果会保存到.art/ART_PROJECT 这个目录下
-ART_PROJECT=query-training
+# 改成命令行参数传入了
+#TRAIN_NAME=queryagent03
+# 改成SFT微调过的模型， ART_MODEL=qwen3-4b-sft， 改成命令行参数传入了
+#ART_MODEL=unsloth/Qwen3-4B-Instruct-2507
+# 项目名称，art的训练结果会保存到.art/PROJECT_NAME 这个目录下， 改成命令行参数传入了
+# PROJECT_NAME=query-training
 NUM_EPOCHS=2
 # 最大训练步数
 MAX_STEPS=200
-# 是否使用ruler模型评判奖励
-USE_RULER=true
-RULER_MODEL=openai/deepseek-chat
+# 是否使用ruler模型评判奖励，USE_RULER，RULER_MODEL改成命令行参数传入了
+# USE_RULER=true
+# RULER_MODEL=openai/deepseek-chat
 RULER_API_KEY=sk-xxxxxx
 RULER_API_BASE=https://api.deepseek.com/v1
 MAX_SEQ_LEN=8192

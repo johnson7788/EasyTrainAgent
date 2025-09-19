@@ -15,3 +15,4 @@ mysql-connector-python
 fastmcp
 openai-agents
 langchain_ollama
+datasets==3.6.0

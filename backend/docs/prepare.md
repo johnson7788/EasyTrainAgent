@@ -7,6 +7,11 @@ docker create --runtime=nvidia --gpus all --net=host --shm-size="10g" --cap-add=
 docker start areal
 docker exec -it areal bash
 ```
+
+## ~/.bashrc中配置使用的GPU和实用的hugging face镜像
+CUDA_VISIBLE_DEVICES=1
+HF_ENDPOINT=https://hf-mirror.com
+
 ## 设置pip镜像源
 ```
 pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple

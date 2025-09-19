@@ -92,6 +92,7 @@ python generate_questions.py -n 20 -o questions.txt
     cd a2a_agent
     python main.py
     ```
+对应日志文件：[a2a_client.log](logs/a2a_client.log)
 
 2.  **生成训练数据**：此脚本会读取 `questions.txt`，通过 Agent 服务与工具交互，最终生成 `train.jsonl` 文件。
 
@@ -100,6 +101,7 @@ python generate_questions.py -n 20 -o questions.txt
     cd ..
     python generate_train_data.py
     ```
+
 
 ### 步骤 4: 监督微调 (SFT)
 
@@ -114,6 +116,7 @@ python train_tool_sft.py \
   --grad_accum 2 \
   --wandb_project easy-train-sft
 ```
+对应日志文件：[train_tool_sft.log](logs/train_tool_sft.log)
 
 训练完成后，LoRA 权重将保存在 `./lora_model` 目录中。
 ```
@@ -132,6 +135,7 @@ python inference_tool_sft.py \
   --base_model unsloth/Qwen3-4B-Instruct-2507 \
   --query "山西2024年5月的LNG到岸价格是多少？"
 ```
+对应日志文件：[inference_tool_sft.log](logs/inference_tool_sft.log)
 
 ### 步骤 6: 合并 LoRA 权重
 
@@ -142,14 +146,20 @@ python inference_tool_sft.py \
 cd ..
 python merge_lora.py  --base_id unsloth/Qwen3-4B-Instruct-2507  --lora_dir ./lora_model   --out_dir ./qwen3-4b-sft
 ```
+对应日志文件： [merge_lora.log](logs/merge_lora.log)
 
 ### 步骤 7: 强化学习 (RL) 训练
 
-为了进一步优化模型的性能，你可以选择进行强化学习训练。
+为了进一步优化模型的性能，你可以选择进行强化学习训练，修改.env传入所需的训练参数。
 
 ```bash
 cd rl_train
 python train.py
+# 注意修改.env中的ART_MODEL模型为你SFT之后的模型
+```
+```
+# 训练完成后进行模型测试
+python model_test.py
 ```
 
 ### 步骤 8: 合并 LoRA 权重

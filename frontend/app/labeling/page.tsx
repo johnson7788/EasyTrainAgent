@@ -6,14 +6,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/componen
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
-import { Loader2, Save, ChevronLeft, ChevronRight, User, Bot, Terminal, Microscope } from 'lucide-react';
+import { Loader2, Save, ChevronLeft, ChevronRight, User, Bot, Terminal, Microscope, Check, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface ConversationTurn {
   from: 'human' | 'function_call' | 'observation' | 'gpt';
   value: string | object;
   label?: {
-    quality: number;
+    status: 'correct' | 'incorrect';
     comment: string;
   };
 }
@@ -74,42 +74,104 @@ export default function LabelingPage() {
     loadFileContent();
   }, [selectedJsonlFile]);
 
-  const handleLabelChange = (turnIndex: number, quality: number, comment: string) => {
+  const handleLabelChange = (turnIndex: number, status: 'correct' | 'incorrect', comment: string) => {
     const newLabeledData = [...labeledData];
     const recordToUpdate = newLabeledData[currentIndex];
     const turnToUpdate = recordToUpdate.conversations[turnIndex];
 
     if (turnToUpdate.from === 'gpt') {
-      turnToUpdate.label = { quality, comment };
+      if (turnToUpdate.label?.status === status) {
+        delete turnToUpdate.label;
+      } else {
+        turnToUpdate.label = { status, comment };
+      }
     }
 
     setLabeledData(newLabeledData);
   };
 
+  const handleCommentChange = (turnIndex: number, comment: string) => {
+    const newLabeledData = [...labeledData];
+    const recordToUpdate = newLabeledData[currentIndex];
+    const turnToUpdate = recordToUpdate.conversations[turnIndex];
+
+    if (turnToUpdate.from === 'gpt' && turnToUpdate.label) {
+      turnToUpdate.label.comment = comment;
+      setLabeledData(newLabeledData);
+    }
+  };
+
   const handleSave = async () => {
     if (!selectedJsonlFile) return;
 
-    const contentToSave = labeledData.map(record => JSON.stringify(record)).join('\n');
-    const originalFileName = selectedJsonlFile.split('/').pop() || 'data.jsonl';
-    const newFileName = originalFileName.replace('.jsonl', '_labeled.jsonl');
+    const correctRecords: JsonlRecord[] = [];
+    const wrongRecords: JsonlRecord[] = [];
 
-    try {
-      const response = await fetch('/api/fs/write',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ path: newFileName, content: contentToSave }),
-        });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to save file.');
+    labeledData.forEach(record => {
+      const gptTurns = record.conversations.filter(t => t.from === 'gpt');
+      if (gptTurns.length === 0 || gptTurns.some(t => !t.label)) {
+        return; // Skip unlabeled records
       }
 
-      toast.success(`Saved labeled data to ${newFileName}`);
+      if (gptTurns.some(t => t.label?.status === 'incorrect')) {
+        wrongRecords.push(record);
+      } else {
+        correctRecords.push(record);
+      }
+    });
+
+    const dir = selectedJsonlFile.substring(0, selectedJsonlFile.lastIndexOf('/'));
+    const originalFileName = selectedJsonlFile.substring(selectedJsonlFile.lastIndexOf('/') + 1).replace('.jsonl', '');
+    
+    const savePromises = [];
+
+    if (correctRecords.length > 0) {
+      const correctFilePath = `${dir}/${originalFileName}_correct.jsonl`;
+      const correctContent = correctRecords.map(r => JSON.stringify(r)).join('\n');
+      savePromises.push(
+        fetch('/api/fs/write', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path: correctFilePath, content: correctContent }),
+        }).then(async (res) => {
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.error || `Failed to save ${correctFilePath}`);
+          }
+          return correctFilePath.split('/').pop();
+        })
+      );
+    }
+
+    if (wrongRecords.length > 0) {
+      const wrongFilePath = `${dir}/${originalFileName}_wrong.jsonl`;
+      const wrongContent = wrongRecords.map(r => JSON.stringify(r)).join('\n');
+      savePromises.push(
+        fetch('/api/fs/write', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path: wrongFilePath, content: wrongContent }),
+        }).then(async (res) => {
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.error || `Failed to save ${wrongFilePath}`);
+          }
+          return wrongFilePath.split('/').pop();
+        })
+      );
+    }
+
+    if (savePromises.length === 0) {
+      toast('No fully labeled records to save.');
+      return;
+    }
+
+    try {
+      const savedFiles = await Promise.all(savePromises);
+      toast.success(`Saved: ${savedFiles.join(', ')}`);
     } catch (err: any) {
-      setError(`Error saving file: ${err.message}`);
-      toast.error(`Failed to save ${newFileName}.`);
+      setError(`Error saving files: ${err.message}`);
+      toast.error(err.message);
     }
   };
 
@@ -181,15 +243,15 @@ export default function LabelingPage() {
 
   const currentRecord = labeledData[currentIndex];
   const labeledCount = labeledData.filter(r => 
-    r.conversations.some(t => t.from === 'gpt' && t.label)
+    r.conversations.filter(t => t.from === 'gpt').every(t => t.label)
   ).length;
-  const progress = (labeledCount / records.length) * 100;
+  const progress = records.length > 0 ? (labeledCount / records.length) * 100 : 0;
 
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
         <div className="flex justify-between items-center">
-          <CardTitle>Labeling: {selectedJsonlFile}</CardTitle>
+          <CardTitle>Labeling: {selectedJsonlFile.split('/').pop()}</CardTitle>
           <div className="text-sm text-gray-500">
             Record {currentIndex + 1} of {records.length}
           </div>
@@ -204,18 +266,24 @@ export default function LabelingPage() {
               {turn.from === 'gpt' && (
                 <div className="mt-4 space-y-2">
                   <div>
-                    <label className="text-xs font-medium">Quality (1-5)</label>
-                    <div className="flex gap-1 mt-1">
-                      {[1, 2, 3, 4, 5].map(q => (
+                    <label className="text-xs font-medium">Label</label>
+                    <div className="flex gap-2 mt-1">
                         <Button
-                          key={q}
                           size="sm"
-                          variant={turn.label?.quality === q ? 'default' : 'outline'}
-                          onClick={() => handleLabelChange(turnIndex, q, turn.label?.comment || '')}
+                          variant={turn.label?.status === 'correct' ? 'default' : 'outline'}
+                          className="text-green-600 border-green-600 hover:bg-green-100"
+                          onClick={() => handleLabelChange(turnIndex, 'correct', turn.label?.comment || '')}
                         >
-                          {q}
+                          <Check className="h-4 w-4 mr-2" /> Correct
                         </Button>
-                      ))}
+                        <Button
+                          size="sm"
+                          variant={turn.label?.status === 'incorrect' ? 'destructive' : 'outline'}
+                          className={turn.label?.status !== 'incorrect' ? "text-red-600 border-red-600 hover:bg-red-100" : ""}
+                          onClick={() => handleLabelChange(turnIndex, 'incorrect', turn.label?.comment || '')}
+                        >
+                          <X className="h-4 w-4 mr-2" /> Incorrect
+                        </Button>
                     </div>
                   </div>
                   <div>
@@ -224,7 +292,8 @@ export default function LabelingPage() {
                       placeholder="Add a comment..."
                       className="mt-1 text-sm"
                       value={turn.label?.comment || ''}
-                      onChange={(e) => handleLabelChange(turnIndex, turn.label?.quality || 0, e.target.value)}
+                      onChange={(e) => handleCommentChange(turnIndex, e.target.value)}
+                      disabled={!turn.label}
                     />
                   </div>
                 </div>
@@ -237,7 +306,7 @@ export default function LabelingPage() {
         <div className="w-full">
           <Progress value={progress} />
           <div className="text-xs text-gray-500 mt-1 text-center">
-            {labeledCount} / {records.length} labeled
+            {labeledCount} / {records.length} records fully labeled
           </div>
         </div>
         <div className="flex justify-between w-full">
@@ -245,7 +314,7 @@ export default function LabelingPage() {
             <ChevronLeft className="h-4 w-4 mr-2" /> Previous
           </Button>
           <Button onClick={handleSave}>
-            <Save className="h-4 w-4 mr-2" /> Save
+            <Save className="h-4 w-4 mr-2" /> Save Labeled Data
           </Button>
           <Button variant="outline" onClick={goToNext} disabled={currentIndex === records.length - 1}>
             Next <ChevronRight className="h-4 w-4 ml-2" />

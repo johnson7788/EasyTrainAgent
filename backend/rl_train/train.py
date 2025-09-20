@@ -75,6 +75,17 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--learning_rate", type=float, default=1e-5, help="Learning rate.")
     p.add_argument("--max_steps", type=int, default=10, help="Max training steps.")
 
+    #===== 生成长度奖励（可选）=====
+    p.add_argument("--len_reward_enable", type=str2bool, default=True, help="Enable length-based reward.")
+    p.add_argument("--count_by", choices=["words", "tokens", "chars"], default="words",
+                        help="How to count length.")
+    p.add_argument("--min_len", type=int, default=80, help="Target minimum length (inclusive).")
+    p.add_argument("--max_len", type=int, default=200, help="Target maximum length (inclusive).")
+    p.add_argument("--len_slack_ratio", type=float, default=0.5,
+                        help="Linear penalty span as a ratio of boundary (e.g., 0.5 means 50% slack).")
+    p.add_argument("--len_reward_weight", type=float, default=0.4,
+                        help="Weight of length reward when mixing with base reward.")
+
     return p
 
 # ---------------- 运行配置（由 argparse 提供） ----------------
@@ -103,6 +114,50 @@ print(f"使用MCP的配置文件: {MCP_CONFIG}")
 
 
 tok = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
+
+# ====== 长度奖励：工具函数 ======
+def _count_length(text: str, mode: str = "words") -> int:
+    text = text or ""
+    if mode == "chars":
+        return len(text)
+    if mode == "tokens":
+        # 使用与训练一致的 tokenizer
+        return len(tok(text, add_special_tokens=False, return_attention_mask=False)["input_ids"])
+    # 默认 words（粗略按空白切分）
+    import re
+    words = re.findall(r"\S+", text, flags=re.UNICODE)
+    return len(words)
+
+def _length_score(count: int, *, min_len: int, max_len: int, slack_ratio: float) -> float:
+    """
+    区间内得 1；区间外线性衰减：距离最近边界越远，分越低；当超出 slack 后降为 0。
+    衰减跨度（slack）= 边界 * slack_ratio
+    """
+    if min_len <= count <= max_len:
+        return 1.0
+    if count < min_len:
+        slack = max(1, int(min_len * max(0.0, slack_ratio)))
+        gap = min_len - count
+        return max(0.0, 1.0 - gap / slack)
+    else:  # count > max_len
+        slack = max(1, int(max_len * max(0.0, slack_ratio)))
+        gap = count - max_len
+        return max(0.0, 1.0 - gap / slack)
+
+def _extract_final_texts(final: "FinalQAResult") -> List[str]:
+    """
+    从最终 JSON 中提取所有候选文本字段（兼容你的 schema: task[*].data.text）。
+    """
+    texts: List[str] = []
+    try:
+        for item in final.task:
+            data = (item or {}).get("data", {})
+            if isinstance(data, dict) and "text" in data:
+                if isinstance(data["text"], str):
+                    texts.append(data["text"])
+    except Exception:
+        pass
+    return texts
 
 # --- 用于裁剪Context，当长度比较长的时候
 def _msg_text(m):
@@ -293,12 +348,30 @@ async def rollout(model: art.Model, scenario: QueryScenario) -> ProjectTrajector
 
         # 这里可以加一些自定义的奖励
         fr = 1.0  # 这里，有final，就给reward
-        # try:
-        #     fr = format_reward(scenario.input_task, final.task)
-        # except Exception:
-        #     fr = 0.0
-        traj.reward = fr
+        # ====== 长度奖励（可选） ======
+        chosen_count = 0
+
+        if args.len_reward_enable:
+            all_texts = _extract_final_texts(final)
+        # 若有多段文本，采用最长的一段作为主答案长度（也可改成平均）
+            main_text = max(all_texts, key=len, default="") if all_texts else ""
+            chosen_count = _count_length(main_text, mode=args.count_by)
+            fr = _length_score(
+                chosen_count,
+                min_len = args.min_len,
+                max_len = args.max_len,
+                slack_ratio = args.len_slack_ratio,
+            )
         traj.metrics["format_reward"] = fr
+        traj.metrics["length_count"] = chosen_count
+        traj.metrics["length_mode"] = args.count_by
+        traj.metrics["length_target"] = f"[{args.min_len}, {args.max_len}]"
+        traj.metrics["length_slack_ratio"] = args.len_slack_ratio
+      # 融合方式：total = base * ((1-w) + w * fr)
+        w = max(0.0, min(1.0, args.len_reward_weight))
+        total = fr * ((1.0 - w) + w * fr)
+        traj.reward = total
+        traj.metrics["total_reward"] = total
     else:
         # 未返回最终 JSON，给最低奖励
         traj.reward = 0.0

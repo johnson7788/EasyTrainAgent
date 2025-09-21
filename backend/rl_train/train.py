@@ -15,7 +15,7 @@ import time
 import asyncio
 import argparse
 # 如果你仍然想允许 .env 作为后备，可保留下一行；若完全不用环境变量，可删除
-# import dotenv; dotenv.load_dotenv()
+import dotenv
 import wandb
 from dataclasses import dataclass
 from textwrap import dedent
@@ -76,7 +76,6 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--max_steps", type=int, default=10, help="Max training steps.")
 
     #===== 生成长度奖励（可选）=====
-    p.add_argument("--len_reward_enable", type=str2bool, default=True, help="Enable length-based reward.")
     p.add_argument("--count_by", choices=["words", "tokens", "chars"], default="words",
                         help="How to count length.")
     p.add_argument("--min_len", type=int, default=80, help="Target minimum length (inclusive).")
@@ -347,31 +346,19 @@ async def rollout(model: art.Model, scenario: QueryScenario) -> ProjectTrajector
         traj.final = final
 
         # 这里可以加一些自定义的奖励
-        fr = 1.0  # 这里，有final，就给reward
-        # ====== 长度奖励（可选） ======
-        chosen_count = 0
-
-        if args.len_reward_enable:
-            all_texts = _extract_final_texts(final)
-        # 若有多段文本，采用最长的一段作为主答案长度（也可改成平均）
-            main_text = max(all_texts, key=len, default="") if all_texts else ""
-            chosen_count = _count_length(main_text, mode=args.count_by)
-            fr = _length_score(
-                chosen_count,
-                min_len = args.min_len,
-                max_len = args.max_len,
-                slack_ratio = args.len_slack_ratio,
-            )
+        fr = 1.0  # 占位
+        all_texts = _extract_final_texts(final)
+    # 若有多段文本，采用最长的一段作为主答案长度（也可改成平均）
+        main_text = max(all_texts, key=len, default="") if all_texts else ""
+        chosen_count = _count_length(main_text, mode=args.count_by)
+        fr = _length_score(
+            chosen_count,
+            min_len = args.min_len,
+            max_len = args.max_len,
+            slack_ratio = args.len_slack_ratio,
+        )
         traj.metrics["format_reward"] = fr
-        traj.metrics["length_count"] = chosen_count
-        traj.metrics["length_mode"] = args.count_by
-        traj.metrics["length_target"] = f"[{args.min_len}, {args.max_len}]"
-        traj.metrics["length_slack_ratio"] = args.len_slack_ratio
-      # 融合方式：total = base * ((1-w) + w * fr)
-        w = max(0.0, min(1.0, args.len_reward_weight))
-        total = fr * ((1.0 - w) + w * fr)
-        traj.reward = total
-        traj.metrics["total_reward"] = total
+        traj.reward = 0.0
     else:
         # 未返回最终 JSON，给最低奖励
         traj.reward = 0.0
@@ -461,11 +448,11 @@ async def main():
     scenarios = build_scenarios_from_questions(questions)
 
     training_config = {
-        "groups_per_step": 2,
-        "num_epochs": int(os.environ.get("NUM_EPOCHS", "2")),
-        "rollouts_per_group": 3,
+        "groups_per_step": int(args.groups_per_step),
+        "num_epochs": int(args.num_epochs),
+        "rollouts_per_group": int(args.rollouts_per_group),
         "learning_rate": float(args.learning_rate),
-        "max_steps": int(os.environ.get("MAX_STEPS", 10)),
+        "max_steps": int(args.max_steps),
     }
     wandb.config.update(training_config)
 
@@ -533,8 +520,18 @@ async def main():
                     # RULER 失效/异常时，退回无裁判训练
                     judged.append(art.TrajectoryGroup(t_list))
             # judged = [clip_group(g, MAX_SEQ_LEN) for g in judged]
+            mixed_judged_groups = []
+            for g in judged:
+                mixed_trajs = []
+                for t in g:
+                    base = float(getattr(t, "reward", 0.0))  # RULER 的分
+                    mine = float((getattr(t, "metrics", {}) or {}).get("formate_reward", 0.0))  # 格式分数
+                    mixed = 0.5 * base + 0.5 * mine
+                    t.reward = mixed  # 最终奖励，RUler的分数和长度的格式的分数各占比重0.5
+                    mixed_trajs.append(t)
+                mixed_judged_groups.append(art.TrajectoryGroup(mixed_trajs))
             await model.train(
-                trajectory_groups=judged,
+                trajectory_groups=mixed_judged_groups,
                 config=art.TrainConfig(learning_rate=training_config["learning_rate"]),
                 _config={"logprob_calculation_chunk_size": 1024},
             )

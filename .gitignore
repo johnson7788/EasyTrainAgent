@@ -57,3 +57,4 @@ cache
 .env_prod
 backend/workspace
 backend/projects
+example

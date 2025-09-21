@@ -15,7 +15,7 @@ import time
 import asyncio
 import argparse
 # 如果你仍然想允许 .env 作为后备，可保留下一行；若完全不用环境变量，可删除
-# import dotenv; dotenv.load_dotenv()
+import dotenv
 import wandb
 from dataclasses import dataclass
 from textwrap import dedent
@@ -388,11 +388,11 @@ async def main():
     scenarios = build_scenarios_from_questions(questions)
 
     training_config = {
-        "groups_per_step": 2,
-        "num_epochs": int(os.environ.get("NUM_EPOCHS", "2")),
-        "rollouts_per_group": 3,
+        "groups_per_step": int(args.groups_per_step),
+        "num_epochs": int(args.num_epochs),
+        "rollouts_per_group": int(args.rollouts_per_group),
         "learning_rate": float(args.learning_rate),
-        "max_steps": int(os.environ.get("MAX_STEPS", 10)),
+        "max_steps": int(args.max_steps),
     }
     wandb.config.update(training_config)
 

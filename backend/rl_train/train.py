@@ -367,7 +367,11 @@ async def main():
     # Backend
     if USE_LOCAL_BACKEND:
         from art.local.backend import LocalBackend
-        backend = LocalBackend()
+        # 模型保存路径
+        path = os.path.join("save_model", PROJECT_NAME)
+        if not os.path.exists(path):
+            os.makedirs(path)
+        backend = LocalBackend(path=path)
     else:
         from art.skypilot.backend import SkyPilotBackend
         backend = await SkyPilotBackend.initialize_cluster(

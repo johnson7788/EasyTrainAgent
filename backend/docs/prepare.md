@@ -18,7 +18,7 @@ pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/si
 ```
 # 克隆强化学习训练框架
 ```
-gitclone https://github.com/OpenPipe/ART.git
+git clone https://github.com/OpenPipe/ART.git
 cd ART
 pip install .
 pip install ".[backend]"

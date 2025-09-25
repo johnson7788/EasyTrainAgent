@@ -9,6 +9,9 @@ This project consists of two main parts:
 - **Backend**: A Python-based environment for generating training data, fine-tuning language models, and serving the final Agent.
 - **Frontend**: A Next.js application that provides a user-friendly graphical interface for tasks like project management, file system interaction, command execution, and data labeling.
 
+## 截图
+![home.png](docs/home.png)
+
 ## ✨ Key Features
 
 ### Backend

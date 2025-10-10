@@ -69,3 +69,15 @@ register_dataset(
         preprocess_func=CoundownTaskPreprocessor(),
         tags=['math']))
 
+
+# 请检查ms-swift/swift/trainers/rlhf_trainer/grpo_trainer.py 数据中如果没有传入tools，请手动修改源码
+```
+        for data in inputs:
+            # Extract required metadata fields
+            request_data = {key: data[key] for key in REQUEST_METADATA_FIELDS if key in data}
+            if 'tools' in data:
+                if isinstance(data["tools"], str):
+                    request_data["tools"] = json.loads(data["tools"])
+                else:
+                    request_data["tools"] = data["tools"]
+```

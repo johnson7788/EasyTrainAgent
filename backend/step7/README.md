@@ -31,6 +31,10 @@ mcp_config.json  # 使用哪些的MCP工具
 mcp_config_load.py # 加载mcp_config.json，被plugin.py中的MCPCallScheduler使用
 ```
 
+## 主要修改
+1. dataset.py数据加载方式
+2. plugin中的mcp_call_scheduler和llm_ruler_reward的使用MCP的方式和奖励函数
+
 ## 运行GRPO训练
 1) python energy_services.py 启动step1中的MCP server
 2) cp env_template .env  #配置ruler模型

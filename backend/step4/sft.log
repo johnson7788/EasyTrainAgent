@@ -1,0 +1,52 @@
+swift sft \
+>     --model Qwen/Qwen3-4B-Instruct-2507 \
+>     --train_type lora \
+>     --dataset './step3/train.jsonl' \
+>     --torch_dtype bfloat16 \
+>     --num_train_epochs 1 \
+>     --per_device_train_batch_size 1 \
+>     --per_device_eval_batch_size 1 \
+>     --learning_rate 1e-4 \
+>     --lora_rank 8 \
+>     --lora_alpha 32 \
+>     --target_modules all-linear \
+>     --gradient_accumulation_steps 16 \
+>     --eval_steps 50 \
+>     --save_steps 50 \
+>     --save_total_limit 2 \
+>     --logging_steps 5 \
+>     --max_length 4096 \
+>     --output_dir output \
+>     --system '你是一个天然气专家，可以使用工具回答用户的问题。' \
+>     --warmup_ratio 0.05 \
+>     --dataloader_num_workers 4 \
+>     --model_author swift \
+>     --model_name swift-robot
+
+/usr/local/lib/python3.11/site-packages/torch/cuda/__init__.py:61: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py
+instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+
+[INFO:swift] model_parameter_info: PeftModelForCausalLM: 4038.9832M Params (16.5151M Trainable [0.4089%]), 0.0001M Buffers.
+/usr/local/lib/python3.11/site-packages/swift/trainers/mixin.py:104: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Seq2SeqTrainer.__init__`. Use `processing_class` instead.
+  super().__init__(
+/usr/local/lib/python3.11/site-packages/deepspeed/ops/op_builder/builder.py:16: DeprecationWarning: The distutils package is deprecated and slated for removal in Python 3.12. Use setuptools or check PEP 632 for potential alternatives
+  import distutils.ccompiler
+/usr/local/lib/python3.11/site-packages/deepspeed/ops/op_builder/builder.py:18: DeprecationWarning: The distutils.sysconfig module is deprecated, use sysconfig instead
+  import distutils.sysconfig
+[2025-09-27 22:55:29,728] [INFO] [real_accelerator.py:260:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-09-27 22:55:31,502] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+[INFO:swift] use_reentrant: True
+[INFO:swift] The logging file will be saved in: /workspace/verl/docs/ms-swift/output/v1-20250927-221821/logging.jsonl
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None}.
+Train:   0%|                                                                                                              | 0/2 [00:00<?, ?it/s]/usr/local/lib/python3.11/site-packages/torch/cuda/__init__.py:61: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+[INFO:swift] use_logits_to_keep: True
+{'loss': 0.95332909, 'grad_norm': 2.68535495, 'learning_rate': 0.0001, 'token_acc': 0.82803897, 'epoch': 0.84, 'global_step/max_steps': '1/2', 'percentage': '50.00%', 'elapsed_time': '10s', 'remaining_time': '10s', 'memory(GiB)': 9.78, 'train_speed(iter/s)': 0.093831}
+Train: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████| 2/2 [00:12<00:00,  5.32s/it][INFO:swift] Saving model checkpoint to /workspace/verl/docs/ms-swift/output/v1-20250927-221821/checkpoint-2
+{'train_runtime': 12.743, 'train_samples_per_second': 1.491, 'train_steps_per_second': 0.157, 'train_loss': 0.87286359, 'token_acc': 0.891258, 'epoch': 1.0, 'global_step/max_steps': '2/2', 'percentage': '100.00%', 'elapsed_time': '12s', 'remaining_time': '0s', 'memory(GiB)': 9.78, 'train_speed(iter/s)': 0.157085}
+Train: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████| 2/2 [00:12<00:00,  6.37s/it]
+[INFO:swift] last_model_checkpoint: /workspace/verl/docs/ms-swift/output/v1-20250927-221821/checkpoint-2
+[INFO:swift] best_model_checkpoint: None
+[INFO:swift] images_dir: /workspace/verl/docs/ms-swift/output/v1-20250927-221821/images
+[INFO:swift] End time of running main: 2025-09-27 22:55:46.707444

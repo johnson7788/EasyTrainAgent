@@ -1,0 +1,95 @@
+# Agent输出的日志
+收到用户的问题: 现在的具体时间是多少？, 传入的metadata信息是: {'language': 'English', 'user_id': 123456}
+Context ID: be96df6b-05a3-4c28-b7a1-3fe7e8c334a7, Task ID: 9f28fea4-287f-4342-9991-f0b8ab713771
+传入的tool_names为空，使用默认工具对象（共 0 个）
+提供了mcp_config，开始加载mcp_config: mcp_config.json
+INFO:httpx:HTTP Request: GET http://localhost:9000/sse "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: POST http://localhost:9000/messages/?session_id=ed6b824db4f74bc79448c888c63ccd91 "HTTP/1.1 202 Accepted"
+INFO:httpx:HTTP Request: POST http://localhost:9000/messages/?session_id=ed6b824db4f74bc79448c888c63ccd91 "HTTP/1.1 202 Accepted"
+INFO:httpx:HTTP Request: POST http://localhost:9000/messages/?session_id=ed6b824db4f74bc79448c888c63ccd91 "HTTP/1.1 202 Accepted"
+LLM可用的工具总数是: 5
+初始化graph： <langgraph.graph.state.CompiledStateGraph object at 0x7f273f25ce90>
+graph_instance： <langgraph.graph.state.CompiledStateGraph object at 0x7f273f25ce90>
+INFO:httpx:HTTP Request: POST http://127.0.0.1:8001/v1/chat/completions "HTTP/1.1 200 OK"
+2025/09/28 11:54:16
+Agent输出的message信息: <tool_call>
+
+search_dbs: []
+current_state.metadata: {'source': 'loop', 'step': 1, 'parents': {}}
+Agent返回的数据信息: {'is_task_complete': False, 'require_user_input': False, 'content': '<tool_call>\n', 'metadata': {'search_dbs': []}, 'data_type': 'text_chunk'}
+update_status收到信息，更新给client端
+2025/09/28 11:54:16
+Agent输出的message信息: {"name":
+search_dbs: []
+current_state.metadata: {'source': 'loop', 'step': 1, 'parents': {}}
+Agent返回的数据信息: {'is_task_complete': False, 'require_user_input': False, 'content': '{"name": ', 'metadata': {'search_dbs': []}, 'data_type': 'text_chunk'}
+update_status收到信息，更新给client端
+2025/09/28 11:54:17
+Agent输出的message信息: "get_current_time",
+search_dbs: []
+current_state.metadata: {'source': 'loop', 'step': 1, 'parents': {}}
+Agent返回的数据信息: {'is_task_complete': False, 'require_user_input': False, 'content': '"get_current_time", ', 'metadata': {'search_dbs': []}, 'data_type': 'text_chunk'}
+update_status收到信息，更新给client端
+2025/09/28 11:54:17
+Agent输出的message信息: "arguments":
+search_dbs: []
+current_state.metadata: {'source': 'loop', 'step': 1, 'parents': {}}
+Agent返回的数据信息: {'is_task_complete': False, 'require_user_input': False, 'content': '"arguments": ', 'metadata': {'search_dbs': []}, 'data_type': 'text_chunk'}
+update_status收到信息，更新给client端
+2025/09/28 11:54:17
+Agent输出的message信息: {}}
+
+search_dbs: []
+current_state.metadata: {'source': 'loop', 'step': 1, 'parents': {}}
+Agent返回的数据信息: {'is_task_complete': False, 'require_user_input': False, 'content': '{}}\n', 'metadata': {'search_dbs': []}, 'data_type': 'text_chunk'}
+update_status收到信息，更新给client端
+2025/09/28 11:54:18
+Agent输出的message信息: </tool_call>
+search_dbs: []
+current_state.metadata: {'source': 'loop', 'step': 1, 'parents': {}}
+收集了工具的分块的输出: [{'index': None, 'id': 'toolcall-afa6aed7d6e9493491c9f6ee648a925d', 'function': {'arguments': '{}', 'name': 'get_current_time'}, 'type': 'function'}]
+INFO:httpx:HTTP Request: GET http://localhost:9000/sse "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: POST http://localhost:9000/messages/?session_id=c917f3e9571242fc8f8d9d996be780b5 "HTTP/1.1 202 Accepted"
+INFO:httpx:HTTP Request: POST http://localhost:9000/messages/?session_id=c917f3e9571242fc8f8d9d996be780b5 "HTTP/1.1 202 Accepted"
+INFO:httpx:HTTP Request: POST http://localhost:9000/messages/?session_id=c917f3e9571242fc8f8d9d996be780b5 "HTTP/1.1 202 Accepted"
+INFO:httpx:HTTP Request: POST http://localhost:9000/messages/?session_id=c917f3e9571242fc8f8d9d996be780b5 "HTTP/1.1 202 Accepted"
+2025/09/28 11:54:18
+Agent输出的message信息: 11:54:18
+search_dbs: []
+current_state.metadata: {'source': 'loop', 'step': 2, 'parents': {}}
+Agent返回的数据信息: {'is_task_complete': False, 'require_user_input': False, 'content': '正在使用tool检索相关知识…', 'metadata': {'search_dbs': []}, 'data': [{'name': 'get_current_time', 'tool_call_id': 'toolcall-afa6aed7d6e9493491c9f6ee648a925d', 'tool_output': '11:54:18'}], 'data_type': 'tool_response'}
+update_status收到信息，更新给client端
+INFO:httpx:HTTP Request: POST http://127.0.0.1:8001/v1/chat/completions "HTTP/1.1 200 OK"
+2025/09/28 11:54:18
+Agent输出的message信息: 现在
+search_dbs: []
+current_state.metadata: {'source': 'loop', 'step': 4, 'parents': {}}
+Agent返回的数据信息: {'is_task_complete': False, 'require_user_input': False, 'content': '现在', 'metadata': {'search_dbs': []}, 'data_type': 'text_chunk'}
+update_status收到信息，更新给client端
+2025/09/28 11:54:18
+Agent输出的message信息: 的时间
+search_dbs: []
+current_state.metadata: {'source': 'loop', 'step': 4, 'parents': {}}
+Agent返回的数据信息: {'is_task_complete': False, 'require_user_input': False, 'content': '的时间', 'metadata': {'search_dbs': []}, 'data_type': 'text_chunk'}
+update_status收到信息，更新给client端
+2025/09/28 11:54:19
+Agent输出的message信息: 是
+search_dbs: []
+current_state.metadata: {'source': 'loop', 'step': 4, 'parents': {}}
+Agent返回的数据信息: {'is_task_complete': False, 'require_user_input': False, 'content': '是', 'metadata': {'search_dbs': []}, 'data_type': 'text_chunk'}
+update_status收到信息，更新给client端
+2025/09/28 11:54:19
+Agent输出的message信息:
+search_dbs: []
+current_state.metadata: {'source': 'loop', 'step': 4, 'parents': {}}
+Agent返回的数据信息: {'is_task_complete': False, 'require_user_input': False, 'content': ' ', 'metadata': {'search_dbs': []}, 'data_type': 'text_chunk'}
+update_status收到信息，更新给client端
+2025/09/28 11:54:20
+Agent输出的message信息: 11:54:18。
+search_dbs: []
+current_state.metadata: {'source': 'loop', 'step': 4, 'parents': {}}
+Agent返回的数据信息: {'is_task_complete': False, 'require_user_input': False, 'content': '11:54:18。', 'metadata': {'search_dbs': []}, 'data_type': 'text_chunk'}
+update_status收到信息，更新给client端
+最后一轮次Agent输出 token: content='11:54:18。' additional_kwargs={} response_metadata={'finish_reason': 'stop', 'model_name': 'Qwen3-4B-Instruct-2507'} id='run--8dc5fa07-d286-4722-981f-7e3373e9f089' usage_metadata={'input_tokens': 1179, 'output_tokens': 14, 'total_tokens': 1193, 'input_token_details': {}, 'output_token_details': {}}
+Agent返回的数据信息: {'is_task_complete': True, 'require_user_input': False, 'content': '11:54:18。', 'metadata': {'search_dbs': []}, 'data_type': 'result'}
+add_artifact完成最后更新，更新给client端

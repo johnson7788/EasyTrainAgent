@@ -1,0 +1,75 @@
+ python a2a_client.py
+INFO:__main__:尝试获取 Agent Card: http://localhost:10066/.well-known/agent.json
+INFO:httpx:HTTP Request: GET http://localhost:10066/.well-known/agent.json "HTTP/1.1 200 OK"
+INFO:a2a.client.client:Successfully fetched agent card data from http://localhost:10066/.well-known/agent.json: {'capabilities': {'streaming': True}, 'defaultInputModes': ['text', 'text/plain'], 'defaultOutputModes': ['text', 'text/plain'], 'description': '根据用户的问题合理的使用工具的 解决用户的问题', 'name': 'knowledge_search', 'protocolVersion': '0.2.6', 'skills': [{'description': '会使用工具的Agent', 'examples': ['今天的日 期？', '计算浙江 2025 年 4 月与 2025 年 3 月的月均 LNG 价格差。'], 'id': 'knowledge_search', 'name': '工具助手Agent', 'tags': ['知识检索', '多轮问答', '智能助手']}], 'url': 'http://localhost:10066/', 'version': '1.0.0'}
+INFO:__main__:成功获取 public agent card:
+INFO:__main__:{
+  "capabilities": {
+    "streaming": true
+  },
+  "defaultInputModes": [
+    "text",
+    "text/plain"
+  ],
+  "defaultOutputModes": [
+    "text",
+    "text/plain"
+  ],
+  "description": "根据用户的问题合理的使用工具的解决用户的问题",
+  "name": "knowledge_search",
+  "protocolVersion": "0.2.6",
+  "skills": [
+    {
+      "description": "会使用工具的Agent",
+      "examples": [
+        "今天的日期？",
+        "计算浙江 2025 年 4 月与 2025 年 3 月的月均 LNG 价格差。"
+      ],
+      "id": "knowledge_search",
+      "name": "工具助手Agent",
+      "tags": [
+        "知识检索",
+        "多轮问答",
+        "智能助手"
+      ]
+    }
+  ],
+  "url": "http://localhost:10066/",
+  "version": "1.0.0"
+}
+/workspace/verl/docs/ms-swift/step3/a2a_client.py:36: DeprecationWarning: Accessing field 'supportsAuthenticatedExtendedCard' via its camelCase alias is deprecated and will be removed in version 0.3.0 Use the snake_case name 'supports_authenticated_extended_card' instead.
+  if _public_card.supportsAuthenticatedExtendedCard:
+INFO:__main__:Agent 不支持扩展认证卡，使用 public card。
+Headers({'accept': '*/*', 'accept-encoding': 'gzip, deflate, br, zstd', 'connection': 'keep-alive', 'user-agent': 'python-httpx/0.28.1'})
+INFO:__main__:A2AClient 初始化完成。
+INFO:__main__:开始进行对话...
+=== 流式响应 示例 ===
+INFO:httpx:HTTP Request: POST http://localhost:10066/ "HTTP/1.1 200 OK"
+2025/09/28 11:54:15
+{'id': '3c82b25f-083e-434a-8e9e-330215c6aae8', 'jsonrpc': '2.0', 'result': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'history': [{'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'kind': 'message', 'messageId': '27395f1a8572439ab09f1d07f3b0e6d0', 'metadata': {'language': 'English', 'user_id': 123456}, 'parts': [{'kind': 'text', 'text': '现在的具体时间是多少？'}], 'role': 'user', 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}], 'id': '9f28fea4-287f-4342-9991-f0b8ab713771', 'kind': 'task', 'status': {'state': 'submitted'}}}
+2025/09/28 11:54:16
+{'id': '3c82b25f-083e-434a-8e9e-330215c6aae8', 'jsonrpc': '2.0', 'result': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'final': False, 'kind': 'status-update', 'status': {'message': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'kind': 'message', 'messageId': '93916f3c-ed1a-4030-8c8b-2f1606884b62', 'metadata': {'search_dbs': []}, 'parts': [{'kind': 'text', 'text': '<tool_call>\n'}], 'role': 'agent', 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}, 'state': 'working', 'timestamp': '2025-09-28T03:54:16.316215+00:00'}, 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}}
+2025/09/28 11:54:16
+{'id': '3c82b25f-083e-434a-8e9e-330215c6aae8', 'jsonrpc': '2.0', 'result': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'final': False, 'kind': 'status-update', 'status': {'message': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'kind': 'message', 'messageId': '88ee7aaf-ded2-4b77-94a8-36f909dd40d6', 'metadata': {'search_dbs': []}, 'parts': [{'kind': 'text', 'text': '{"name": '}], 'role': 'agent', 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}, 'state': 'working', 'timestamp': '2025-09-28T03:54:16.768712+00:00'}, 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}}
+2025/09/28 11:54:17
+{'id': '3c82b25f-083e-434a-8e9e-330215c6aae8', 'jsonrpc': '2.0', 'result': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'final': False, 'kind': 'status-update', 'status': {'message': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'kind': 'message', 'messageId': 'c31c4f87-24f4-4394-a32e-834b73751f86', 'metadata': {'search_dbs': []}, 'parts': [{'kind': 'text', 'text': '"get_current_time", '}], 'role': 'agent', 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}, 'state': 'working', 'timestamp': '2025-09-28T03:54:17.345831+00:00'}, 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}}
+2025/09/28 11:54:17
+{'id': '3c82b25f-083e-434a-8e9e-330215c6aae8', 'jsonrpc': '2.0', 'result': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'final': False, 'kind': 'status-update', 'status': {'message': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'kind': 'message', 'messageId': '1dd013a7-e393-4ebe-b344-48eef0c34e4e', 'metadata': {'search_dbs': []}, 'parts': [{'kind': 'text', 'text': '"arguments": '}], 'role': 'agent', 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}, 'state': 'working', 'timestamp': '2025-09-28T03:54:17.696634+00:00'}, 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}}
+2025/09/28 11:54:17
+{'id': '3c82b25f-083e-434a-8e9e-330215c6aae8', 'jsonrpc': '2.0', 'result': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'final': False, 'kind': 'status-update', 'status': {'message': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'kind': 'message', 'messageId': 'aae18165-ddd9-40c3-a1b9-1115f37e4008', 'metadata': {'search_dbs': []}, 'parts': [{'kind': 'text', 'text': '{}}\n'}], 'role': 'agent', 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}, 'state': 'working', 'timestamp': '2025-09-28T03:54:17.813585+00:00'}, 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}}
+2025/09/28 11:54:18
+{'id': '3c82b25f-083e-434a-8e9e-330215c6aae8', 'jsonrpc': '2.0', 'result': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'final': False, 'kind': 'status-update', 'status': {'message': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'kind': 'message', 'messageId': 'aed076b6-8eeb-46d3-999e-bdef85d6c265', 'metadata': {'search_dbs': []}, 'parts': [{'data': {'data': [{'name': 'get_current_time', 'tool_call_id': 'toolcall-afa6aed7d6e9493491c9f6ee648a925d', 'tool_output': '11:54:18'}]}, 'kind': 'data'}], 'role': 'agent', 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}, 'state': 'working', 'timestamp': '2025-09-28T03:54:18.555196+00:00'}, 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}}
+2025/09/28 11:54:18
+{'id': '3c82b25f-083e-434a-8e9e-330215c6aae8', 'jsonrpc': '2.0', 'result': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'final': False, 'kind': 'status-update', 'status': {'message': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'kind': 'message', 'messageId': 'd67b86e1-0739-4235-a1bd-0cf8a2c270e6', 'metadata': {'search_dbs': []}, 'parts': [{'kind': 'text', 'text': '现在'}], 'role': 'agent', 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}, 'state': 'working', 'timestamp': '2025-09-28T03:54:18.796106+00:00'}, 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}}
+2025/09/28 11:54:18
+{'id': '3c82b25f-083e-434a-8e9e-330215c6aae8', 'jsonrpc': '2.0', 'result': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'final': False, 'kind': 'status-update', 'status': {'message': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'kind': 'message', 'messageId': 'c23efb13-cfbe-48ec-92d9-f5fa8399b221', 'metadata': {'search_dbs': []}, 'parts': [{'kind': 'text', 'text': '的时间'}], 'role': 'agent', 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}, 'state': 'working', 'timestamp': '2025-09-28T03:54:18.906968+00:00'}, 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}}
+2025/09/28 11:54:19
+{'id': '3c82b25f-083e-434a-8e9e-330215c6aae8', 'jsonrpc': '2.0', 'result': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'final': False, 'kind': 'status-update', 'status': {'message': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'kind': 'message', 'messageId': '025ab96e-1149-4733-9349-5658f2821da4', 'metadata': {'search_dbs': []}, 'parts': [{'kind': 'text', 'text': '是'}], 'role': 'agent', 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}, 'state': 'working', 'timestamp': '2025-09-28T03:54:19.027925+00:00'}, 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}}
+2025/09/28 11:54:19
+{'id': '3c82b25f-083e-434a-8e9e-330215c6aae8', 'jsonrpc': '2.0', 'result': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'final': False, 'kind': 'status-update', 'status': {'message': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'kind': 'message', 'messageId': '6c9cd658-4934-4862-b138-c2e2d68f9018', 'metadata': {'search_dbs': []}, 'parts': [{'kind': 'text', 'text': ' '}], 'role': 'agent', 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}, 'state': 'working', 'timestamp': '2025-09-28T03:54:19.149084+00:00'}, 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}}
+2025/09/28 11:54:20
+{'id': '3c82b25f-083e-434a-8e9e-330215c6aae8', 'jsonrpc': '2.0', 'result': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'final': False, 'kind': 'status-update', 'status': {'message': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'kind': 'message', 'messageId': '7c5145d5-6e74-4e3a-b8a1-1bf59351e23f', 'metadata': {'search_dbs': []}, 'parts': [{'kind': 'text', 'text': '11:54:18。'}], 'role': 'agent', 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}, 'state': 'working', 'timestamp': '2025-09-28T03:54:20.355340+00:00'}, 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}}
+2025/09/28 11:54:20
+{'id': '3c82b25f-083e-434a-8e9e-330215c6aae8', 'jsonrpc': '2.0', 'result': {'artifact': {'artifactId': '3d497a7f-ca9c-4acc-9567-f859178ffd11', 'metadata': {'search_dbs': []}, 'name': 'conversion_result', 'parts': [{'kind': 'text', 'text': '11:54:18。'}]}, 'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'kind': 'artifact-update', 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}}
+2025/09/28 11:54:20
+{'id': '3c82b25f-083e-434a-8e9e-330215c6aae8', 'jsonrpc': '2.0', 'result': {'contextId': 'be96df6b-05a3-4c28-b7a1-3fe7e8c334a7', 'final': True, 'kind': 'status-update', 'status': {'state': 'completed', 'timestamp': '2025-09-28T03:54:20.360474+00:00'}, 'taskId': '9f28fea4-287f-4342-9991-f0b8ab713771'}}

@@ -1,0 +1,68 @@
+swift export \
+>   --model Qwen/Qwen3-4B-Instruct-2507 \
+>   --adapters output/v1-20250927-221821/checkpoint-2 \
+>   --merge_lora true \
+>   --output_dir output/merged_qwen3
+/usr/local/lib/python3.11/site-packages/torch/cuda/__init__.py:61: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+run sh: `/usr/local/bin/python /usr/local/lib/python3.11/site-packages/swift/cli/export.py --model Qwen/Qwen3-4B-Instruct-2507 --adapters output/v1-20250927-221821/checkpoint-2 --merge_lora true --output_dir output/merged_qwen3`
+/usr/local/lib/python3.11/site-packages/torch/cuda/__init__.py:61: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+[INFO:swift] Successfully registered `/usr/local/lib/python3.11/site-packages/swift/llm/dataset/data/dataset_info.json`.
+[INFO:swift] Loading the model using model_dir: output/v1-20250927-221821/checkpoint-2
+[INFO:swift] Successfully loaded /workspace/verl/docs/ms-swift/output/v1-20250927-221821/checkpoint-2/args.json.
+[INFO:swift] rank: -1, local_rank: -1, world_size: 1, local_world_size: 1
+[INFO:swift] Downloading the model from ModelScope Hub, model_id: Qwen/Qwen3-4B-Instruct-2507
+Downloading Model from https://www.modelscope.cn to directory: /mnt/workspace/.cache/modelscope/hub/models/Qwen/Qwen3-4B-Instruct-2507
+[INFO:swift] Loading the model using model_dir: /mnt/workspace/.cache/modelscope/hub/models/Qwen/Qwen3-4B-Instruct-2507
+`torch_dtype` is deprecated! Use `dtype` instead!
+[INFO:swift] Setting args.lazy_tokenize: False
+[INFO:swift] args.output_dir: `/workspace/verl/docs/ms-swift/output/merged_qwen3`
+[INFO:swift] Global seed set to 42
+[INFO:swift] args: ExportArguments(model='Qwen/Qwen3-4B-Instruct-2507', model_type='qwen3_nothinking', model_revision=None, task_type='causal_lm', torch_dtype=torch.bfloat16, attn_impl=None, new_special_tokens=[], num_labels=None, problem_type=None, rope_scaling=None, device_map=None, max_memory={}, max_model_len=None, local_repo_path=None, init_strategy=None, template='qwen3_nothinking', system='你是一个天然气专家，可以使用工具回答用户的问题。', max_length=2048, truncation_strategy='delete', max_pixels=None, agent_template=None, norm_bbox=None, use_chat_template=True, padding_free=False, padding_side='right', loss_scale='default', sequence_parallel_size=1, response_prefix=None, template_backend='swift', dataset=[], val_dataset=[], split_dataset_ratio=0.0, data_seed=42, dataset_num_proc=1, load_from_cache_file=True, dataset_shuffle=True, val_dataset_shuffle=False, streaming=False, interleave_prob=None, stopping_strategy='first_exhausted', shuffle_buffer_size=1000, download_mode='reuse_dataset_if_exists', columns={}, strict=False, remove_unused_columns=True, model_name=None, model_author=None, custom_dataset_info=[], quant_method=None, quant_bits=None, hqq_axis=None, bnb_4bit_compute_dtype=torch.bfloat16, bnb_4bit_quant_type='nf4', bnb_4bit_use_double_quant=True, bnb_4bit_quant_storage=None, max_new_tokens=None, temperature=None, top_k=None, top_p=None, repetition_penalty=None, num_beams=1, stream=False, stop_words=[], logprobs=False, top_logprobs=None, ckpt_dir='/workspace/verl/docs/ms-swift/output/v1-20250927-221821/checkpoint-2', lora_modules=[], tuner_backend='peft', train_type='lora', adapters=['/workspace/verl/docs/ms-swift/output/v1-20250927-221821/checkpoint-2'], external_plugins=[], seed=42, model_kwargs={}, load_args=True, load_data_args=False, packing=False, packing_length=None, lazy_tokenize=False, cached_dataset=[], custom_register_path=[], use_hf=False, hub_token=None, ddp_timeout=18000000, ddp_backend=None, ignore_args_error=False, use_swift_lora=False, merge_lora=True, safe_serialization=True, max_shard_size='5GB', output_dir='/workspace/verl/docs/ms-swift/output/merged_qwen3', quant_n_samples=256, quant_batch_size=1, group_size=128, to_cached_dataset=False, to_ollama=False, to_mcore=False, to_hf=False, mcore_model=None, mcore_adapters=[], thread_count=None, test_convert_precision=False, test_convert_dtype=torch.float32, push_to_hub=False, hub_model_id=None, hub_private_repo=False, commit_message='update files', to_peft_format=False, exist_ok=False)
+[INFO:swift] Start time of running main: 2025-09-28 13:13:37.143936
+[INFO:swift] swift.__version__: 3.8.1
+[INFO:swift] merge_device_map: None
+[INFO:swift] Downloading the model from ModelScope Hub, model_id: Qwen/Qwen3-4B-Instruct-2507
+Downloading Model from https://www.modelscope.cn to directory: /mnt/workspace/.cache/modelscope/hub/models/Qwen/Qwen3-4B-Instruct-2507
+[INFO:swift] Loading the model using model_dir: /mnt/workspace/.cache/modelscope/hub/models/Qwen/Qwen3-4B-Instruct-2507
+[INFO:swift] model_kwargs: {'device_map': 'auto'}
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards: 100%|██████████████████████████████████████████████████████████████████████████████████| 3/3 [00:01<00:00,  2.41it/s]
+WARNING:accelerate.big_modeling:Some parameters are on the meta device because they were offloaded to the cpu.
+[INFO:swift] default_system: '你是一个天然气专家，可以使用工具回答用户的问题。'
+[INFO:swift] max_length: 2048
+[INFO:swift] response_prefix: ''
+[INFO:swift] agent_template: hermes
+/usr/local/lib/python3.11/site-packages/awq/__init__.py:21: DeprecationWarning:
+I have left this message as the final dev message to help you transition.
+
+Important Notice:
+- AutoAWQ is officially deprecated and will no longer be maintained.
+- The last tested configuration used Torch 2.6.0 and Transformers 4.51.3.
+- If future versions of Transformers break AutoAWQ compatibility, please report the issue to the Transformers project.
+
+Alternative:
+- AutoAWQ has been adopted by the vLLM Project: https://github.com/vllm-project/llm-compressor
+
+For further inquiries, feel free to reach out:
+- X: https://x.com/casper_hansen_
+- LinkedIn: https://www.linkedin.com/in/casper-hansen-804005170/
+
+  warnings.warn(_FINAL_DEV_MESSAGE, category=DeprecationWarning, stacklevel=1)
+WARNING:accelerate.big_modeling:Some parameters are on the meta device because they were offloaded to the cpu.
+[INFO:swift] Merge LoRA...
+[INFO:swift] Saving merged weights...
+/usr/local/lib/python3.11/site-packages/deepspeed/ops/op_builder/builder.py:16: DeprecationWarning: The distutils package is deprecated and slated for removal in Python 3.12. Use setuptools or check PEP 632 for potential alternatives
+  import distutils.ccompiler
+/usr/local/lib/python3.11/site-packages/deepspeed/ops/op_builder/builder.py:18: DeprecationWarning: The distutils.sysconfig module is deprecated, use sysconfig instead
+  import distutils.sysconfig
+[2025-09-28 13:13:47,864] [INFO] [real_accelerator.py:260:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2025-09-28 13:13:49,659] [INFO] [logging.py:107:log_dist] [Rank -1] [TorchCheckpointEngine] Initialized with serialization = False
+/usr/local/lib/python3.11/site-packages/transformers/modeling_utils.py:4086: UserWarning: Attempting to save a model with offloaded modules. Ensure that unallocated cpu memory exceeds the `shard_size` (5GB default)
+  warnings.warn(
+Saving checkpoint shards:   0%|                                                                                           | 0/2 [00:00<?, ?it/s]/usr/local/lib/python3.11/site-packages/torch/cuda/__init__.py:61: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+Saving checkpoint shards: 100%|███████████████████████████████████████████████████████████████████████████████████| 2/2 [00:15<00:00,  7.77s/it]
+[INFO:swift] Successfully merged LoRA and saved in /workspace/verl/docs/ms-swift/output/merged_qwen3.
+[INFO:swift] End time of running main: 2025-09-28 13:14:05.442774

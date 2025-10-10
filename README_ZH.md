@@ -8,6 +8,10 @@ EasyTrainAgent 是一个旨在帮助开发者轻松训练和部署自己领域�
 - **前端**：一个 Next.js 应用，为管理项目、与文件系统交互、执行命令和数据标注等任务提供友好的图形界面。
 
 
+## 版本更新
+10月10日从ART更新到ms-swift，好处是更适用于国内的网络环境，而且ms-swift可以支持多模态训练。
+
+
 ## 部署使用ms-swfit的镜像
 ```
 # 获取镜像
@@ -59,14 +63,6 @@ pip install -e .
 - **权重合并**：将训练好的 LoRA 权重与基础模型合并，生成一个可直接部署的完整模型。
 - **一键部署**：使用 VLLM 框架将合并后的模型部署为与 OpenAI 兼容的 API 服务。
 
-### 前端(开发中)
-- **项目管理**：初始化和管理不同的训练项目。
-- **文件系统交互**：直接在 Web 界面中读取、写入和修改项目工作区内的文件。
-- **命令执行**：运行 Shell 命令和 Python 脚本来执行训练和管理任务。
-- **日志查看器**：一个专用界面，用于实时查看进程日志。
-- **数据标注**：为数据注释任务提供的 UI 工具。
-- **配置向导**：一个分步指南，帮助你轻松设置项目。
-
 ### 流程
 ```mermaid
 flowchart TD
@@ -108,22 +104,6 @@ flowchart TD
     ```bash
     git clone https://github.com/johnson7788/EasyTrainAgent
     cd EasyTrainAgent
-    ```
-
-2.  **配置后端:**
-    ```bash
-    cd backend
-    pip install -r requirements.txt
-    cp env_template .env
-    # 编辑 .env 文件并填入你的 API 密钥
-    cd ..
-    ```
-
-3.  **配置前端:**
-    ```bash
-    cd frontend
-    npm install
-    cd ..
     ```
 
 ##  后端训练流程

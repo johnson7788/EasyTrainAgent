@@ -1,5 +1,5 @@
 # EasyTrainAgent
-特点：全流程训练自己的领域Agent，仅需配置MCP工具。
+特点：全流程训练自己的领域Agent，仅需配置MCP工具，通过ruler函数backend/step7/my_ruler.py作为GRPO的奖励生成，无需给每个MCP都设置单独的奖励。
 
 EasyTrainAgent 是一个旨在帮助开发者轻松训练和部署自己领域专属智能体（Agent）的项目。它提供从数据生成到模型部署的完整工作流程，并配备了一个用于管理和监控的 Web 用户界面。
 
@@ -9,7 +9,7 @@ EasyTrainAgent 是一个旨在帮助开发者轻松训练和部署自己领域�
 
 
 ## 版本更新
-10月10日从ART框架更新到ms-swift框架啦，好处是更适用于国内的网络环境，而且ms-swift可以支持多模态训练。
+1. 10月10日从ART框架更新到ms-swift框架啦，好处是更适用于国内的网络环境，而且ms-swift可以支持多模态训练。
 
 
 ## 部署使用ms-swfit的镜像

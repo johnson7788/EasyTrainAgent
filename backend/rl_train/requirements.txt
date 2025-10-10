@@ -1,3 +1,0 @@
-langgraph
-langchain_mcp_adapters
-fastmcp

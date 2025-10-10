@@ -1,0 +1,17 @@
+GOOGLE_API_KEY=
+DEEPSEEK_API_KEY=
+ALI_API_KEY=
+OPENAI_API_KEY=sk-p
+OPENAI_API_BASE=https://api.openai.com/v1
+CLAUDE_API_KEY=sk-ant-
+DOUBAO_API_KEY=
+# 如果使用openai，那么请开启代理
+# HTTP_PROXY=http://127.0.0.1:7890
+# HTTPS_PROXY=http://127.0.0.1:7890
+# 测试本地的swift训练后的模型
+# MODEL_PROVIDER=openai
+# LLM_MODEL=gpt-4.1
+MODEL_PROVIDER=swift
+LLM_MODEL=mylora-model
+SWIFT_API_URL=http://127.0.0.1:8000/v1
+SWIFT_API_KEY=empty

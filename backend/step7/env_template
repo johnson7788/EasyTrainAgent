@@ -1,0 +1,7 @@
+OPENAI_API_KEY=sk-proj--xxxxx
+DEEPSEEK_API_KEY=sxxxx
+# Ruler奖励模型,RULER_API_KEY时deepseek-key
+RULER_JUDGE_MODEL=deepseek/deepseek-chat
+RULER_API_KEY=sk-xxxx
+RULER_API_BASE=https://api.deepseek.com/v1
+

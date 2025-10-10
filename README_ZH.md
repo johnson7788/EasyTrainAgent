@@ -7,6 +7,48 @@ EasyTrainAgent 是一个旨在帮助开发者轻松训练和部署自己领域�
 - **后端**：一个基于 Python 的环境，用于生成训练数据、微调语言模型以及提供最终的 Agent 服务。
 - **前端**：一个 Next.js 应用，为管理项目、与文件系统交互、执行命令和数据标注等任务提供友好的图形界面。
 
+
+## 部署使用ms-swfit的镜像
+```
+# 获取镜像
+docker pull modelscope-registry.cn-beijing.cr.aliyuncs.com/modelscope-repo/modelscope:ubuntu22.04-cuda12.6.3-py311-torch2.7.1-vllm0.10.1.1-modelscope1.29.2-swift3.8.1
+# 使用哪个GPU, 可以为all，或者某个显卡
+docker create --runtime=nvidia --gpus all --net=host --shm-size="10g" --cap-add=SYS_ADMIN -v .:/workspace/verl -v /etc/localtime:/etc/localtime:ro -v /etc/timezone:/etc/timezone:ro --name swift modelscope-registry.cn-beijing.cr.aliyuncs.com/modelscope-repo/modelscope:ubuntu22.04-cuda12.6.3-py311-torch2.7.1-vllm0.10.1.1-modelscope1.29.2-swift3.8.1 sleep infinity
+docker create --runtime=nvidia --gpus "device=2" --net=host --shm-size="10g" --cap-add=SYS_ADMIN -v .:/workspace/verl -v /etc/localtime:/etc/localtime:ro -v /etc/timezone:/etc/timezone:ro --name swift modelscope-registry.cn-beijing.cr.aliyuncs.com/modelscope-repo/modelscope:ubuntu22.04-cuda12.6.3-py311-torch2.7.1-vllm0.10.1.1-modelscope1.29.2-swift3.8.1 sleep infinity
+# 映射.cache也出来，这里保存模型和数据等
+mkdir -p .cache
+docker create \
+  --runtime=nvidia --gpus all --net=host \
+  --shm-size="10g" --cap-add=SYS_ADMIN \
+  -v "$(pwd)":/workspace/verl \
+  -v "$(pwd)/.cache":/root/.cache \
+  -v /etc/localtime:/etc/localtime:ro \
+  -v /etc/timezone:/etc/timezone:ro \
+  --name swift \
+  modelscope-registry.cn-beijing.cr.aliyuncs.com/modelscope-repo/modelscope:ubuntu22.04-cuda12.6.3-py311-torch2.7.1-vllm0.10.1.1-modelscope1.29.2-swift3.8.1 \
+  sleep infinity
+
+# 启动容器
+docker start swift
+docker exec -it swift bash
+```
+
+## ~/.bashrc中配置使用的GPU和实用的hugging face镜像
+```
+export CUDA_VISIBLE_DEVICES=1
+export HF_ENDPOINT=https://hf-mirror.com
+```
+
+## 设置pip镜像源
+```
+pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
+```
+## 克隆强化学习训练框架，容器中默认安装的3.8.1的版本，可以升级
+```
+cd ms-swift
+pip install -e .
+```
+
 ## ✨ 主要功能
 
 ### 后端

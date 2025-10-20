@@ -25,7 +25,7 @@ docker create \
   --runtime=nvidia --gpus all --net=host \
   --shm-size="10g" --cap-add=SYS_ADMIN \
   -v "$(pwd)":/workspace/verl \
-  -v "$(pwd)/.cache":/root/.cache \
+  -v "$HOME/.cache":/root/.cache \
   -v /etc/localtime:/etc/localtime:ro \
   -v /etc/timezone:/etc/timezone:ro \
   --name swift \
